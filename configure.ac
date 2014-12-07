@@ -161,7 +161,6 @@ if test "$with_cpp" = "yes";  then
                       [have_qt5=yes;qt_reduce_reloc=`$PKG_CONFIG --variable=qt_config Qt5Core | grep "reduce_relocations"`],
                       [have_qt5=no])
   fi
-  AM_CONDITIONAL([QT5_REDUCE_RELOCATIONS], [test "x$qt_reduce_reloc" != "x"])
   if test "$have_qt5" = "yes"; then
     AC_PATH_PROGS([QT5_MOC], [moc-qt5 moc])
     have_qt5=$success
@@ -172,6 +171,7 @@ AM_CONDITIONAL([AMX_HAVE_LIBEVENT], [test "$have_libevent" = "yes"])
 AM_CONDITIONAL([AMX_HAVE_ZLIB], [test "$have_zlib" = "yes"])
 AM_CONDITIONAL([AMX_HAVE_QT], [test "$have_qt" = "yes"])
 AM_CONDITIONAL([AMX_HAVE_QT5], [test "$have_qt5" = "yes"])
+AM_CONDITIONAL([QT5_REDUCE_RELOCATIONS], [test "x$qt_reduce_reloc" != "x"])
 
 AX_THRIFT_LIB(c_glib, [C (GLib)], yes)
 if test "$with_c_glib" = "yes"; then
