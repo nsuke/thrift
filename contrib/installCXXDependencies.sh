@@ -25,7 +25,7 @@
 # General dependencies
 sudo add-apt-repository ppa:ubuntu-sdk-team/ppa -y
 sudo apt-get update -qq
-sudo apt-get install -qq qtbase5-dev qtbase5-dev-tools
+sudo apt-get install -qq qtbase5-dev qtbase5-dev-tools qt5-default
 
 sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu/ trusty main restricted" -y
 sudo apt-get update -qq
