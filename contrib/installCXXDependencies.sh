@@ -26,4 +26,4 @@
 sudo apt-add-repository "deb http://archive.ubuntu.com/ubuntu/ trusty main restricted" -y
 sudo apt-get update -qq
 sudo apt-get install -qq libboost-dev libboost-test-dev libboost-program-options-dev libboost-system-dev libboost-filesystem-dev libevent-dev automake libtool flex bison pkg-config g++ libssl-dev make libqt4-dev git debhelper bc 
-dpkg -S /usr/include/boost/version.hpp
+dpkg libqt5-dev -S /usr/include/boost/version.hpp
