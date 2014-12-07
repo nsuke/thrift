@@ -36,7 +36,7 @@ matrix:
   include:
     - env:
         - TEST_NAME="C & C++ & Haskell (gcc, automake)"
-          CONFIG="--without-csharp --without-java --without-erlang --without-nodejs --without-lua --without-python --without-perl --without-php --without-php-extension --without-ruby --without-go --without-d"
+          CONFIG="--without-csharp --without-java --without-erlang --without-nodejs --without-lua --without-python --without-perl --without-php --without-php-extension --without-ruby --without-go --without-d --without-haskell"
       compiler: gcc
       before_install:
        - sh contrib/installCXXDependencies.sh;
