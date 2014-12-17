@@ -18,7 +18,7 @@
 #
 
 
-cmake_minimum_required(VERSION 2.8.9)
+cmake_minimum_required(VERSION 2.8)
 
 # Find required packages
 if(WITH_BOOSTTHREADS)
@@ -144,13 +144,6 @@ set( thriftcppz_SOURCES
     src/thrift/transport/TZlibTransport.cpp
 )
 
-# Thrift Qt4 server
-set( thriftcppqt_SOURCES
-    src/thrift/qt/TQIODeviceTransport.cpp
-    src/thrift/qt/TQTcpServer.cpp
-)
-set( thriftcppqt_HEADERS src/thrift/qt/TQTcpServer.h )
-
 # Contains the thrift specific ADD_LIBRARY_THRIFT and TARGET_LINK_LIBRARIES_THRIFT
 include(ThriftMacros)
 
@@ -173,23 +166,20 @@ if(WITH_ZLIB)
     TARGET_LINK_LIBRARIES_THRIFT(thriftz ${SYSLIBS} ${ZLIB_LIBRARIES})
 endif()
 
-if(WITH_QT4)
-    find_package(Qt4 REQUIRED)
-    include(${QT_USE_FILE})
-    include_directories(${QT_INCLUDES})
-
-    include_directories(${CMAKE_CURRENT_BINARY_DIR})
-    qt4_wrap_cpp(thriftcppqt_HEADERS_MOC ${thriftcppqt_HEADERS})
-
-    ADD_LIBRARY_THRIFT(thriftqt ${thriftcppqt_SOURCES} ${thriftcppqt_HEADERS_MOC})
-    TARGET_LINK_LIBRARIES_THRIFT(thriftqt ${SYSLIBS} ${QT_LIBRARIES})
-endif()
-
 if(WITH_QT5)
+    set(CMAKE_AUTOMOC ON)
+    set(CMAKE_INCLUDE_CURRENT_DIR ON)
     find_package(Qt5Core REQUIRED)
     ADD_LIBRARY_THRIFT(thriftqt5 ${thriftcppqt_SOURCES})
-    qt5_use_modules(thriftqt5 Core)
-    TARGET_LINK_LIBRARIES_THRIFT(thriftqt5 ${SYSLIBS})
+    TARGET_LINK_LIBRARIES_THRIFT(thriftqt5 ${SYSLIBS} Qt5::Core)
+endif()
+
+if(WITH_QT4)
+    set(CMAKE_AUTOMOC ON)
+    set(CMAKE_INCLUDE_CURRENT_DIR ON)
+    find_package(Qt4 REQUIRED)
+    ADD_LIBRARY_THRIFT(thriftqt ${thriftcppqt_SOURCES})
+    TARGET_LINK_LIBRARIES_THRIFT(thriftqt ${SYSLIBS} Qt4::QtCore)
 endif()
 
 if(MSVC)
