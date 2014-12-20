@@ -172,17 +172,17 @@ if(WITH_ZLIB)
     TARGET_LINK_LIBRARIES_THRIFT(thriftz ${SYSLIBS} ${ZLIB_LIBRARIES})
 endif()
 
-if(WITH_QT5)
-    # Qt5 has its own directory to avoid conflict with Qt4 caused by CMAKE_AUTOMOC
-    add_subdirectory(src/thrift/qt)
-endif()
-
 if(WITH_QT4)
     cmake_minimum_required(VERSION 2.8.12)
     set(CMAKE_AUTOMOC ON)
     find_package(Qt4 REQUIRED COMPONENTS QtCore QtNetwork)
     ADD_LIBRARY_THRIFT(thriftqt ${thriftcppqt_SOURCES})
     TARGET_LINK_LIBRARIES_THRIFT(thriftqt ${SYSLIBS} Qt4::QtCore Qt4::QtNetwork)
+endif()
+
+if(WITH_QT5)
+    # Qt5 has its own directory to avoid conflict with Qt4 caused by CMAKE_AUTOMOC
+    add_subdirectory(src/thrift/qt)
 endif()
 
 if(MSVC)

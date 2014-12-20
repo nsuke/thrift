@@ -23,7 +23,7 @@ SCRIPTPATH=$( cd $(dirname $0) ; pwd -P )
 # see what we need: http://thrift.apache.org/docs/install/ubuntu
 
 # General dependencies
-sh ${SCRIPTPATH}/installCXXDependencies.sh
+# sh ${SCRIPTPATH}/installCXXDependencies.sh
 
 # Java dependencies
 sudo apt-get install -qq ant openjdk-7-jdk

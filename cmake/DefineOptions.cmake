@@ -44,16 +44,16 @@ CMAKE_DEPENDENT_OPTION(WITH_CPP "Build C++ library" ON
 find_package(ZLIB QUIET)
 CMAKE_DEPENDENT_OPTION(WITH_ZLIB "Build with ZLIB support" ON
                        "ZLIB_FOUND" OFF)
-find_package(Libevent QUIET)
+find_package(Libevent)
 CMAKE_DEPENDENT_OPTION(WITH_LIBEVENT "Build with libevent support" ON
                        "Libevent_FOUND" OFF)
 find_package(Qt4 QUIET COMPONENTS QtCore QtNetwork)
-CMAKE_DEPENDENT_OPTION(WITH_QT4 "Build with Qt4 support" ON
+CMAKE_DEPENDENT_OPTION(WITH_QT4 "Build with Qt4 support" OFF
                        "QT4_FOUND" OFF)
 find_package(Qt5 QUIET COMPONENTS Core Network)
 CMAKE_DEPENDENT_OPTION(WITH_QT5 "Build with Qt5 support" ON
-                       "Qt5Core_FOUND" OFF)
-find_package(OpenSSL QUIET)
+                       "Qt5_FOUND" OFF)
+find_package(OpenSSL REQUIRED)
 CMAKE_DEPENDENT_OPTION(WITH_OPENSSL "Build with OpenSSL support" ON
                        "OpenSSL_FOUND" OFF)
 option(WITH_BOOSTTHREADS "Build with Boost thread support" OFF)
