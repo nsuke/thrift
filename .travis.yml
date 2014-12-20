@@ -78,18 +78,18 @@ env:
     - TEST_NAME="C++/std-threads (CMake + CPack)"
       CMAKE_CONFIG="-DCMAKE_CXX_FLAGS=-std=c++0x -DWITH_C_GLIB=OFF -DWITH_JAVA=OFF -DWITH_STDTHREADS=ON"
 
-   - TEST_NAME="compiler (mingw32-gcc, CMake + CPack)"
-     CMAKE_CONFIG="-DCMAKE_TOOLCHAIN_FILE=../contrib/mingw32-toolchain.cmake -DBUILD_COMPILER=ON -DBUILD_LIBRARIES=OFF -DBUILD_TESTING=OFF -DBUILD_EXAMPLES=OFF"
+    - TEST_NAME="compiler (mingw32-gcc, CMake + CPack)"
+      CMAKE_CONFIG="-DCMAKE_TOOLCHAIN_FILE=../contrib/mingw32-toolchain.cmake -DBUILD_COMPILER=ON -DBUILD_LIBRARIES=OFF -DBUILD_TESTING=OFF -DBUILD_EXAMPLES=OFF"
 
-   - TEST_NAME="dist (gcc, automake)"
-     CONFIG=""
-     ALL_DEPS="yes"
-     MAKE_TARGET="dist"
+    - TEST_NAME="dist (gcc, automake)"
+      CONFIG=""
+      ALL_DEPS="yes"
+      MAKE_TARGET="dist"
 
-   - TEST_NAME="make cross (gcc, automake)"
-     CONFIG="--without-python"
-     ALL_DEPS="yes"
-     MAKE_TARGET="cross"
+    - TEST_NAME="make cross (gcc, automake)"
+      CONFIG="--without-python"
+      ALL_DEPS="yes"
+      MAKE_TARGET="cross"
 
 matrix:
   include:
