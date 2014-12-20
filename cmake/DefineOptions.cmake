@@ -48,12 +48,15 @@ find_package(Libevent)
 CMAKE_DEPENDENT_OPTION(WITH_LIBEVENT "Build with libevent support" ON
                        "Libevent_FOUND" OFF)
 find_package(Qt4 QUIET COMPONENTS QtCore QtNetwork)
-CMAKE_DEPENDENT_OPTION(WITH_QT4 "Build with Qt4 support" OFF
+CMAKE_DEPENDENT_OPTION(WITH_QT4 "Build with Qt4 support" ON
                        "QT4_FOUND" OFF)
 find_package(Qt5 QUIET COMPONENTS Core Network)
 CMAKE_DEPENDENT_OPTION(WITH_QT5 "Build with Qt5 support" ON
                        "Qt5_FOUND" OFF)
-find_package(OpenSSL REQUIRED)
+if(${WITH_QT4} AND ${WITH_QT5} AND ${CMAKE_MAJOR_VERSION} LESS 3)
+  set(WITH_QT4 OFF)
+endif()
+find_package(OpenSSL QUIET)
 CMAKE_DEPENDENT_OPTION(WITH_OPENSSL "Build with OpenSSL support" ON
                        "OpenSSL_FOUND" OFF)
 option(WITH_BOOSTTHREADS "Build with Boost thread support" OFF)
