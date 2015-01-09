@@ -347,13 +347,14 @@ namespace Test
 
         } // class TestHandler
 
-        public static void Execute(string[] args)
+        public static bool Execute(string[] args)
         {
             try
             {
                 bool useBufferedSockets = false, useFramed = false, useEncryption = false, compact = false, json = false;
                 int port = 9090;
                 string pipe = null;
+                string certPath = "../../../../../keys/server.pem";
                 for (int i = 0; i < args.Length; i++)
                 {
                     if (args[i] == "-pipe")  // -pipe name
@@ -384,6 +385,10 @@ namespace Test
                     {
                         useEncryption = true;
                     }
+                    else if (args[i].StartsWith("--cert="))
+                    {
+                        certPath = args[i].Substring("--cert=".Length);
+                    }
                 }
 
                 // Processor
@@ -400,7 +405,7 @@ namespace Test
                 {
                     if (useEncryption)
                     {
-                        trans = new TTLSServerSocket(port, 0, useBufferedSockets, new X509Certificate2("../../../../../keys/server.pem"));
+                        trans = new TTLSServerSocket(port, 0, useBufferedSockets, new X509Certificate2(certPath));
                     }
                     else
                     {
@@ -450,8 +455,10 @@ namespace Test
             catch (Exception x)
             {
                 Console.Error.Write(x);
+                return false;
             }
             Console.WriteLine("done.");
+            return true;
         }
     }
 }
