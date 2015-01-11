@@ -37,9 +37,16 @@ dist-hook:
 print-version:
 	@echo $(VERSION)
 
+.PHONY: precross cross cross2
+precross-%: all
+	$(MAKE) -C $* precross
+precross: all precross-test precross-lib
 
-cross: check
+cross: precross
 	sh test/test.sh
+
+cross2: precross
+	python test/test.py -s
 
 codespell_skip_files = \
 	*.jar \
