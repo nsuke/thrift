@@ -45,6 +45,15 @@ test-driver
 /aclocal/lt*.m4
 /autoscan.log
 /autoscan-*.log
+/compiler/cpp/test/plugin/t_cpp_generator.cc
+/compiler/cpp/src/plugin/plugin_constants.cpp
+/compiler/cpp/src/plugin/plugin_constants.h
+/compiler/cpp/src/plugin/plugin_types.cpp
+/compiler/cpp/src/plugin/plugin_types.h
+/compiler/cpp/test/*test
+/compiler/cpp/test/thrift-gen-*
+/compiler/cpp/thrift-bootstrap
+/compiler/cpp/gen.stamp
 /compiler/cpp/Debug
 /compiler/cpp/Release
 /compiler/cpp/libparse.a

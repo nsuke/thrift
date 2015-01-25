@@ -37,6 +37,8 @@ option(BUILD_LIBRARIES "Build Thrfit libraries" ON)
 find_package(Boost 1.53 QUIET)
 CMAKE_DEPENDENT_OPTION(WITH_CPP "Build C++ library" ON
                        "BUILD_LIBRARIES;Boost_FOUND" OFF)
+CMAKE_DEPENDENT_OPTION(WITH_PLUGIN "Build compiler plugin support" ON
+                       "BUILD_COMPILER;WITH_CPP" OFF)
 # NOTE: Currently the following options are C++ specific,
 # but in future other libraries might reuse them.
 # So they are not dependent on WIHT_CPP but setting them without WITH_CPP currently
@@ -89,6 +91,7 @@ message(STATUS "Thrift version:                       ${thrift_VERSION} (${thrif
 message(STATUS "Thrift package version:               ${PACKAGE_VERSION}")
 message(STATUS "Build configuration Summary")
 message(STATUS "  Build Thrift compiler:              ${BUILD_COMPILER}")
+message(STATUS "  Build compiler plugin support:      ${WITH_PLUGIN}")
 message(STATUS "  Build with unit tests:              ${BUILD_TESTING}")
 message(STATUS "  Build examples:                     ${BUILD_EXAMPLES}")
 message(STATUS "  Build Thrfit libraries:             ${BUILD_LIBRARIES}")

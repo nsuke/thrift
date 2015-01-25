@@ -20,26 +20,13 @@
 #ifndef T_LOGGING_H
 #define T_LOGGING_H
 
-#include <string>
+extern int g_debug;
+extern int g_warn;
+extern int g_verbose;
 
-/**
- * Parse debugging output, used to print helpful info
- */
 void pdebug(const char* fmt, ...);
-
-/**
- * Parser warning
- */
 void pwarning(int level, const char* fmt, ...);
-
-/**
- * Print verbose output message
- */
 void pverbose(const char* fmt, ...);
-
-/**
- * Failure!
- */
 void failure(const char* fmt, ...);
 
 #endif

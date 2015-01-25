@@ -52,13 +52,13 @@ set(libparse_SOURCES
 add_library(libparse STATIC ${libparse_SOURCES})
 
 # Create the thrift compiler
-set( thrift_SOURCES 
-    src/main.cc
+set( thrift_SOURCES
+    src/common.h
+    src/common.cc
     src/md5.c
     src/generate/t_generator.cc
     src/generate/t_generator_registry.h
     src/globals.h
-    src/main.h
     src/platform.h
     src/md5.h
     src/parse/t_doc.h
@@ -88,6 +88,11 @@ set( thrift_SOURCES
     version.h
 )
 
+set(thrift-compiler_SOURCES
+    src/main.h
+    src/main.cc
+)
+
 # This macro adds an option THRIFT_COMPILER_${NAME}
 # that allows enabling or disabling certain languages
 macro(THRIFT_ADD_COMPILER name description initial)
@@ -95,7 +100,7 @@ macro(THRIFT_ADD_COMPILER name description initial)
     set(src "src/generate/t_${name}_generator.cc")
     option(${enabler} ${description} ${initial})
     if(${enabler})
-        list(APPEND thrift_SOURCES ${src})
+        list(APPEND thrift-compiler_SOURCES ${src})
     endif()
 endmacro()
 
@@ -129,9 +134,58 @@ THRIFT_ADD_COMPILER(lua     "Enable compiler for Lua" ON)
 # we also add the current binary directory for generated files
 include_directories(${CMAKE_CURRENT_BINARY_DIR} src)
 
-add_executable(thrift-compiler ${thrift_SOURCES})
+if(NOT ${WITH_PLUGIN})
+    list(APPEND thrift-compiler_SOURCES ${thrift_SOURCES})
+endif()
+add_executable(thrift-compiler ${thrift-compiler_SOURCES})
+
+if(${WITH_PLUGIN})
+    add_executable(thrift-bootstrap ${thrift_SOURCES}
+        src/main.h
+        src/main.cc
+        src/generate/t_cpp_generator.cc
+    )
+    target_link_libraries(thrift-bootstrap libparse)
+
+    set(PLUGIN_GEN_SOURCES
+        ${CMAKE_CURRENT_BINARY_DIR}/plugin/plugin_types.h
+        ${CMAKE_CURRENT_BINARY_DIR}/plugin/plugin_types.cpp
+        ${CMAKE_CURRENT_BINARY_DIR}/plugin/plugin_constants.h
+        ${CMAKE_CURRENT_BINARY_DIR}/plugin/plugin_constants.cpp
+    )
+
+    add_custom_command(OUTPUT ${PLUGIN_GEN_SOURCES}
+        DEPENDS thrift-bootstrap src/plugin/plugin.thrift
+        COMMAND thrift-bootstrap -gen cpp
+        -out ${CMAKE_CURRENT_BINARY_DIR}/plugin
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/plugin/plugin.thrift
+    )
+
+    include_directories(../../lib/cpp/src)
+
+    include(ThriftMacros)
+    ADD_LIBRARY_THRIFT(thriftc
+        ${thrift_SOURCES}
+        ${PLUGIN_GEN_SOURCES}
+        src/logging.cc
+        src/plugin/plugin_output.h
+        src/plugin/plugin_output.cc
+        src/plugin/plugin.h
+        src/plugin/plugin.cc
+    )
+    TARGET_LINK_LIBRARIES_THRIFT(thriftc thrift)
+
+    set_property(TARGET thrift-compiler APPEND
+        PROPERTY COMPILE_DEFINITIONS THRIFT_ENABLE_PLUGIN)
+    target_link_libraries(thrift-compiler thriftc)
+endif()
+
 set_target_properties(thrift-compiler PROPERTIES OUTPUT_NAME thrift)
 
 target_link_libraries(thrift-compiler libparse)
 
 install(TARGETS thrift-compiler DESTINATION "${BIN_INSTALL_DIR}")
+
+if(BUILD_TESTING)
+    add_subdirectory(test)
+endif()

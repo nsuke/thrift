@@ -19,7 +19,14 @@
 
 ACLOCAL_AMFLAGS = -I ./aclocal
 
+if WITH_PLUGIN
+SUBDIRS = lib/cpp compiler/cpp lib
+if WITH_TESTS
+SUBDIRS += lib/cpp/test
+endif
+else
 SUBDIRS = compiler/cpp lib
+endif
 
 if WITH_TESTS
 SUBDIRS += test

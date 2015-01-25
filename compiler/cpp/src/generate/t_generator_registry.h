@@ -42,8 +42,7 @@ public:
       t_program* program,
       // Note: parsed_options will not exist beyond the call to get_generator.
       const std::map<std::string, std::string>& parsed_options,
-      // Note: option_string might not exist beyond the call to get_generator.
-      const std::string& option_string) = 0;
+                                     const std::string& option_string) = 0;
 
   virtual bool is_valid_namespace(const std::string& sub_namespace) = 0;
 
@@ -81,6 +80,9 @@ public:
   static void register_generator(t_generator_factory* factory);
 
   static t_generator* get_generator(t_program* program, const std::string& options);
+  static t_generator* get_generator(t_program* program,
+                                    const std::string& laugnage,
+                                    const std::map<std::string, std::string>& parsed_options);
 
   typedef std::map<std::string, t_generator_factory*> gen_map_t;
   static gen_map_t& get_generator_map();

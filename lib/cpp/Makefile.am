@@ -28,7 +28,9 @@ moc__%.cpp: %.h
 SUBDIRS = .
 
 if WITH_TESTS
+if !WITH_PLUGIN
 SUBDIRS += test
+endif
 endif
 
 pkgconfigdir = $(libdir)/pkgconfig

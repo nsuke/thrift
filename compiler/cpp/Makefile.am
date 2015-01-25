@@ -23,7 +23,13 @@
 
 AM_YFLAGS = -d
 LIBS =
-BUILT_SOURCES = thrifty.cc
+BUILT_SOURCES = thrifty.cc thriftl.cc
+
+SUBDIRS = .
+
+if WITH_TESTS
+SUBDIRS += test
+endif
 
 bin_PROGRAMS = thrift
 
@@ -31,12 +37,12 @@ noinst_LIBRARIES = libparse.a
 
 thrift_OBJDIR = obj
 
-thrift_SOURCES = src/main.cc \
+compiler_core =  src/common.h \
+                 src/common.cc \
                  src/md5.c \
                  src/generate/t_generator.cc \
                  src/generate/t_generator_registry.h \
                  src/globals.h \
-                 src/main.h \
                  src/platform.h \
                  src/logging.h \
                  src/md5.h \
@@ -65,6 +71,11 @@ thrift_SOURCES = src/main.cc \
                  src/generate/t_html_generator.h \
                  src/windows/config.h \
                  src/windows/version.h
+
+plugin_gen = src/plugin/plugin_types.h src/plugin/plugin_types.cpp src/plugin/plugin_constants.h src/plugin/plugin_constants.cpp
+
+thrift_SOURCES = src/main.h \
+                 src/main.cc
 
 # Specific client generator source
 thrift_SOURCES += src/generate/t_c_glib_generator.cc \
@@ -103,6 +114,54 @@ libparse_a_CXXFLAGS = -Wall -Wno-sign-compare -Wno-unused
 libparse_a_SOURCES = src/thrifty.yy \
                      src/thriftl.ll
 
+if !WITH_PLUGIN
+thrift_SOURCES += $(compiler_core)
+else
+noinst_PROGRAMS = thrift-bootstrap
+lib_LTLIBRARIES = libthriftc.la
+
+thrift_CPPFLAGS += -DTHRIFT_ENABLE_PLUGIN=1
+thrift_LDADD += libthriftc.la
+
+BUILT_SOURCES += $(plugin_gen)
+
+thrift_bootstrap_SOURCES = $(compiler_core)\
+                           src/generate/t_cpp_generator.cc \
+                           src/main.h \
+                           src/main.cc
+
+thrift_bootstrap_CPPFLAGS = -I$(srcdir)/src
+thrift_bootstrap_CXXFLAGS = -Wall -Wextra -pedantic
+thrift_bootstrap_LDADD = @LEXLIB@ libparse.a
+
+gen.stamp: thrift-bootstrap
+	@$(RM) -f gen.tmp
+	@touch gen.tmp
+	$(MKDIR_P) src/plugin
+	./thrift-bootstrap -gen cpp -out src/plugin src/plugin/plugin.thrift
+	@mv -f gen.tmp $@
+
+$(plugin_gen): gen.stamp
+	@if test -f $@; then :; else \
+	$(RM) -f gen.stamp; \
+	$(MAKE) $(AM_MAKEFLAGS) gen.stamp; \
+	fi
+
+libthriftc_la_SOURCES = $(compiler_core) \
+                        $(plugin_gen) \
+                        src/plugin/util.h \
+                        src/plugin/type_util.h \
+                        src/plugin/plugin.h \
+                        src/plugin/plugin.cc \
+                        src/plugin/plugin_output.h \
+                        src/plugin/plugin_output.cc \
+                        src/logging.cc
+
+libthriftc_la_CPPFLAGS = -I$(srcdir)/src -Isrc -I$(top_builddir)/lib/cpp/src -DTHRIFT_ENABLE_PLUGIN=1
+libthriftc_la_CXXFLAGS = -Wall -Wextra -pedantic
+libthriftc_la_LIBADD = $(top_builddir)/lib/cpp/libthrift.la
+endif
+
 WINDOWS_DIST = \
              compiler.sln \
              compiler.vcxproj \
@@ -114,7 +173,7 @@ EXTRA_DIST = \
              $(WINDOWS_DIST)
 
 clean-local:
-	$(RM) thriftl.cc thrifty.cc thrifty.h thrifty.hh version.h windows/version.h
+	$(RM) thriftl.cc thrifty.cc thrifty.h thrifty.hh version.h windows/version.h $(plugin_gen)
 
 src/main.cc: version.h
 

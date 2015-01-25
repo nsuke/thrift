@@ -20,7 +20,9 @@
 SUBDIRS =
 
 if WITH_CPP
+if !WITH_PLUGIN
 SUBDIRS += cpp
+endif
 endif
 
 if WITH_C_GLIB
