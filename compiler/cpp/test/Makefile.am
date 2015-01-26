@@ -38,7 +38,7 @@ plugintest_SOURCES = plugin/conversion_test.cc
 plugintest_LDADD = $(top_builddir)/compiler/cpp/libthriftc.la
 
 thrift_gen_mycpp_SOURCES = plugin/cpp_plugin.cc \
-													 plugin/t_cpp_generator.cc
+                           plugin/t_cpp_generator.cc
 thrift_gen_mycpp_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/compiler/cpp -I$(top_srcdir)/compiler/cpp/src/generate
 thrift_gen_mycpp_LDADD = $(top_builddir)/compiler/cpp/libthriftc.la
 
