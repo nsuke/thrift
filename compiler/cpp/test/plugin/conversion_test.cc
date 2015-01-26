@@ -52,14 +52,14 @@ namespace test_data {
   for (std::vector<t_##elem*>::reverse_iterator it = elem##s.rbegin(); it != elem##s.rend(); it++) \
     delete *it;
 #define T_DECL_TESTDATA(r, d, elem) static std::vector< ::t_##elem*> elem##s;
-BOOST_PP_LIST_FOR_EACH(T_DECL_TESTDATA, 0, T_TEST_TYPES)
+BOOST_PP_LIST_FOR_EACH(T_DECL_TESTDATA, _, T_TEST_TYPES)
 #undef T_DECL_TESTDATA
 
 bool has_data = false;
 void cleanup() {
   if (has_data) {
     has_data = false;
-    BOOST_PP_LIST_FOR_EACH(T_DELETE_TESTDATA, 0, T_TEST_TYPES)
+    BOOST_PP_LIST_FOR_EACH(T_DELETE_TESTDATA, _, T_TEST_TYPES)
   }
 }
 
@@ -210,7 +210,7 @@ void init() {
   if (!has_data) {
     has_data = true;
 #define T_INIT_TESTDATA(r, d, elem) init_##elem##s();
-    BOOST_PP_LIST_FOR_EACH(T_INIT_TESTDATA, 0, T_TEST_TYPES)
+    BOOST_PP_LIST_FOR_EACH(T_INIT_TESTDATA, _, T_TEST_TYPES)
     init_types();
 #undef T_INIT_TESTDATA
   }
@@ -470,8 +470,8 @@ bool init_unit_test() {
 
 #define T_TEST_CASE(r, d, type)                                                                    \
   ts->add(BOOST_PARAM_TEST_CASE(test_##type, test_data::type##s.begin(), test_data::type##s.end()));
-  BOOST_PP_LIST_FOR_EACH(T_TEST_CASE, 0, T_TEST_TYPES)
-  T_TEST_CASE(0, 0, type)
+  BOOST_PP_LIST_FOR_EACH(T_TEST_CASE, _, T_TEST_TYPES)
+  T_TEST_CASE(_, _, type)
 
   framework::master_test_suite().add(ts);
   return true;
