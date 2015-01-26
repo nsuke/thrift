@@ -28,13 +28,13 @@
 #include "plugin/type_util.h"
 #include "plugin/plugin_types.h"
 
-
 using namespace apache::thrift;
 using namespace boost::unit_test;
 
 namespace test_data {
 #define T_TEST_TYPES                                                                               \
-  BOOST_PP_TUPLE_TO_LIST((program,                                                                 \
+  BOOST_PP_TUPLE_TO_LIST(14,                                                                       \
+                         (program,                                                                 \
                           base_type,                                                               \
                           enum_value,                                                              \
                           enum,                                                                    \
@@ -51,15 +51,15 @@ namespace test_data {
 #define T_DELETE_TESTDATA(r, d, elem)                                                              \
   for (std::vector<t_##elem*>::reverse_iterator it = elem##s.rbegin(); it != elem##s.rend(); it++) \
     delete *it;
-#define T_DECL_TESTDATA(r, d, elem) static std::vector<::t_##elem*> elem##s;
-BOOST_PP_LIST_FOR_EACH(T_DECL_TESTDATA, , T_TEST_TYPES)
+#define T_DECL_TESTDATA(r, d, elem) static std::vector< ::t_##elem*> elem##s;
+BOOST_PP_LIST_FOR_EACH(T_DECL_TESTDATA, 0, T_TEST_TYPES)
 #undef T_DECL_TESTDATA
 
 bool has_data = false;
 void cleanup() {
   if (has_data) {
     has_data = false;
-    BOOST_PP_LIST_FOR_EACH(T_DELETE_TESTDATA, , T_TEST_TYPES)
+    BOOST_PP_LIST_FOR_EACH(T_DELETE_TESTDATA, 0, T_TEST_TYPES)
   }
 }
 
@@ -210,7 +210,7 @@ void init() {
   if (!has_data) {
     has_data = true;
 #define T_INIT_TESTDATA(r, d, elem) init_##elem##s();
-    BOOST_PP_LIST_FOR_EACH(T_INIT_TESTDATA, , T_TEST_TYPES)
+    BOOST_PP_LIST_FOR_EACH(T_INIT_TESTDATA, 0, T_TEST_TYPES)
     init_types();
 #undef T_INIT_TESTDATA
   }
@@ -238,12 +238,13 @@ T* round_trip(T* t) {
 void test_base_type(::t_base_type* sut) {
   plugin::t_base_type p;
   plugin_output::convert(sut, p);
-  boost::scoped_ptr<::t_base_type> sut2(plugin::convert(p));
+  boost::scoped_ptr< ::t_base_type> sut2(plugin::convert(p));
 
 #define THRIFT_CHECK(r, data, elem) BOOST_PP_EXPAND(BOOST_CHECK_EQUAL(data elem, sut2->elem));
   BOOST_PP_LIST_FOR_EACH(THRIFT_CHECK,
                          sut->,
-                         BOOST_PP_TUPLE_TO_LIST((is_void(),
+                         BOOST_PP_TUPLE_TO_LIST(7,
+                                                (is_void(),
                                                  is_string(),
                                                  is_bool(),
                                                  is_string_list(),
@@ -284,11 +285,12 @@ void test_const_value(t_const_value* sut) {
 }
 
 void test_const(t_const* sut) {
-  boost::scoped_ptr<::t_const> sut2(round_trip(sut));
+  boost::scoped_ptr< ::t_const> sut2(round_trip(sut));
 
   BOOST_PP_LIST_FOR_EACH(THRIFT_CHECK,
                          sut->,
-                         BOOST_PP_TUPLE_TO_LIST((get_type()->get_name(),
+                         BOOST_PP_TUPLE_TO_LIST(4,
+                                                (get_type()->get_name(),
                                                  get_name(),
                                                  get_value()->get_type(),
                                                  get_doc())))
@@ -299,15 +301,16 @@ void test_enum_value(t_enum_value* sut) {
 
   BOOST_PP_LIST_FOR_EACH(THRIFT_CHECK,
                          sut->,
-                         BOOST_PP_TUPLE_TO_LIST((get_name(), get_value(), get_doc())))
+                         BOOST_PP_TUPLE_TO_LIST(3, (get_name(), get_value(), get_doc())))
 }
 
 void test_enum(t_enum* sut) {
-  boost::scoped_ptr<::t_enum> sut2(round_trip(sut));
+  boost::scoped_ptr< ::t_enum> sut2(round_trip(sut));
 
   BOOST_PP_LIST_FOR_EACH(THRIFT_CHECK,
                          sut->,
-                         BOOST_PP_TUPLE_TO_LIST((get_name(),
+                         BOOST_PP_TUPLE_TO_LIST(7,
+                                                (get_name(),
                                                  get_min_value()->get_value(),
                                                  get_max_value()->get_value(),
                                                  get_constant_by_value(11)->get_value(),
@@ -321,7 +324,8 @@ void test_list(t_list* sut) {
 
   BOOST_PP_LIST_FOR_EACH(THRIFT_CHECK,
                          sut->,
-                         BOOST_PP_TUPLE_TO_LIST((get_elem_type()->get_name(),
+                         BOOST_PP_TUPLE_TO_LIST(5,
+                                                (get_elem_type()->get_name(),
                                                  has_cpp_name(),
                                                  get_fingerprint_material(),
                                                  get_doc(),
@@ -334,7 +338,8 @@ void test_set(t_set* sut) {
 
   BOOST_PP_LIST_FOR_EACH(THRIFT_CHECK,
                          sut->,
-                         BOOST_PP_TUPLE_TO_LIST((get_elem_type()->get_name(),
+                         BOOST_PP_TUPLE_TO_LIST(5,
+                                                (get_elem_type()->get_name(),
                                                  has_cpp_name(),
                                                  get_fingerprint_material(),
                                                  get_doc(),
@@ -347,7 +352,8 @@ void test_map(t_map* sut) {
 
   BOOST_PP_LIST_FOR_EACH(THRIFT_CHECK,
                          sut->,
-                         BOOST_PP_TUPLE_TO_LIST((get_key_type()->get_name(),
+                         BOOST_PP_TUPLE_TO_LIST(6,
+                                                (get_key_type()->get_name(),
                                                  get_val_type()->get_name(),
                                                  has_cpp_name(),
                                                  get_fingerprint_material(),
@@ -362,7 +368,8 @@ void test_typedef(t_typedef* sut) {
 
   BOOST_PP_LIST_FOR_EACH(THRIFT_CHECK,
                          sut->,
-                         BOOST_PP_TUPLE_TO_LIST((get_doc(),
+                         BOOST_PP_TUPLE_TO_LIST(5,
+                                                (get_doc(),
                                                  get_name(),
                                                  get_symbolic(),
                                                  is_forward_typedef(),
@@ -374,7 +381,8 @@ void test_type(t_type* sut) {
 
   BOOST_PP_LIST_FOR_EACH(THRIFT_CHECK,
                          sut->,
-                         BOOST_PP_TUPLE_TO_LIST((is_void(),
+                         BOOST_PP_TUPLE_TO_LIST(17,
+                                                (is_void(),
                                                  is_base_type(),
                                                  is_string(),
                                                  is_bool(),
@@ -398,7 +406,8 @@ void test_field(t_field* sut) {
 
   BOOST_PP_LIST_FOR_EACH(THRIFT_CHECK,
                          sut->,
-                         BOOST_PP_TUPLE_TO_LIST((get_fingerprint_material(),
+                         BOOST_PP_TUPLE_TO_LIST(6,
+                                                (get_fingerprint_material(),
                                                  get_req(),
                                                  get_reference(),
                                                  get_key(),
@@ -420,7 +429,8 @@ void test_struct(t_struct* sut) {
 
   BOOST_PP_LIST_FOR_EACH(THRIFT_CHECK,
                          sut->,
-                         BOOST_PP_TUPLE_TO_LIST((is_union(),
+                         BOOST_PP_TUPLE_TO_LIST(6,
+                                                (is_union(),
                                                  is_xception(),
                                                  is_struct(),
                                                  get_doc(),
@@ -431,17 +441,17 @@ void test_struct(t_struct* sut) {
 void test_function(t_function* sut) {
   boost::scoped_ptr<t_function> sut2(round_trip(sut));
 
-  BOOST_PP_LIST_FOR_EACH(THRIFT_CHECK,
-                         sut->,
-                         BOOST_PP_TUPLE_TO_LIST(
-                             (get_doc(), get_name(), get_returntype()->get_name(), is_oneway())))
+  BOOST_PP_LIST_FOR_EACH(
+      THRIFT_CHECK,
+      sut->,
+      BOOST_PP_TUPLE_TO_LIST(4, (get_doc(), get_name(), get_returntype()->get_name(), is_oneway())))
 }
 void test_service(t_service* sut) {
   boost::scoped_ptr<t_service> sut2(round_trip(sut));
 
   BOOST_PP_LIST_FOR_EACH(THRIFT_CHECK,
                          sut->,
-                         BOOST_PP_TUPLE_TO_LIST((get_doc(), get_name(), get_functions().size())))
+                         BOOST_PP_TUPLE_TO_LIST(3, (get_doc(), get_name(), get_functions().size())))
   if (sut->get_extends()) {
     THRIFT_CHECK(, sut->, get_extends()->get_name());
   } else {
@@ -452,7 +462,7 @@ void test_service(t_service* sut) {
 void test_program(t_program* sut) {
   boost::scoped_ptr<t_program> sut2(round_trip(sut));
 
-  BOOST_PP_LIST_FOR_EACH(THRIFT_CHECK, sut->, BOOST_PP_TUPLE_TO_LIST((get_doc(), get_name())))
+  BOOST_PP_LIST_FOR_EACH(THRIFT_CHECK, sut->, BOOST_PP_TUPLE_TO_LIST(2, (get_doc(), get_name())))
 }
 bool init_unit_test() {
   test_data::init();
@@ -460,8 +470,8 @@ bool init_unit_test() {
 
 #define T_TEST_CASE(r, d, type)                                                                    \
   ts->add(BOOST_PARAM_TEST_CASE(test_##type, test_data::type##s.begin(), test_data::type##s.end()));
-  BOOST_PP_LIST_FOR_EACH(T_TEST_CASE, , T_TEST_TYPES)
-  T_TEST_CASE(, , type)
+  BOOST_PP_LIST_FOR_EACH(T_TEST_CASE, 0, T_TEST_TYPES)
+  T_TEST_CASE(0, 0, type)
 
   framework::master_test_suite().add(ts);
   return true;

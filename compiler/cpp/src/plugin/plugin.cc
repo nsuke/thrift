@@ -161,7 +161,7 @@ void set_global_cache(const TypeRegistry& from) {
   g_service_cache.compileAll();
 }
 
-template <typename T = ::t_type>
+template <typename T>
 T* resolve_type(int64_t name) {
   return reinterpret_cast<T*>(g_type_cache[name]);
 }
@@ -210,7 +210,7 @@ THRIFT_CONVERT_FORWARD(t_typedef) {
   if (from.forward) {
     to = new ::t_typedef(g_program, from.symbolic, true);
   } else {
-    to = new ::t_typedef(g_program, resolve_type(from.type), from.symbolic);
+    to = new ::t_typedef(g_program, resolve_type< ::t_type>(from.type), from.symbolic);
   }
   return to;
 }
@@ -227,19 +227,21 @@ THRIFT_CONVERSION(t_enum, g_program) {
   boost::for_each(from.constants | boost::adaptors::transformed(convert<t_enum_value>),
                   boost::bind(&::t_enum::append, to, _1));
 }
-THRIFT_CONVERSION(t_list, resolve_type(from.elem_type)) {
+THRIFT_CONVERSION(t_list, resolve_type< ::t_type>(from.elem_type)) {
   assert(to);
   THRIFT_ASSIGN_METADATA();
   if (from.__isset.cpp_name)
     to->set_cpp_name(from.cpp_name);
 }
-THRIFT_CONVERSION(t_set, resolve_type(from.elem_type)) {
+THRIFT_CONVERSION(t_set, resolve_type< ::t_type>(from.elem_type)) {
   assert(to);
   THRIFT_ASSIGN_METADATA();
   if (from.__isset.cpp_name)
     to->set_cpp_name(from.cpp_name);
 }
-THRIFT_CONVERSION(t_map, resolve_type(from.key_type), resolve_type(from.val_type)) {
+THRIFT_CONVERSION(t_map,
+                  resolve_type< ::t_type>(from.key_type),
+                  resolve_type< ::t_type>(from.val_type)) {
   assert(to);
   THRIFT_ASSIGN_METADATA();
   if (from.__isset.cpp_name)
@@ -253,10 +255,11 @@ THRIFT_CONVERSION(t_const_value, ) {
   assert(to);
   if (from.__isset.map_val) {
     to->set_map();
-    boost::for_each(from.map_val
-                    | boost::adaptors::transformed(
-                          pair_transform(&convert<t_const_value>, &convert<t_const_value>)),
-                    binary_setter(to, &::t_const_value::add_map));
+    for (std::map<t_const_value, t_const_value>::const_iterator it = from.map_val.begin();
+         it != from.map_val.end();
+         it++) {
+      to->add_map(convert(it->first), convert(it->second));
+    }
   } else if (from.__isset.list_val) {
     to->set_list();
     boost::for_each(from.list_val | boost::adaptors::transformed(&convert<t_const_value>),
@@ -272,7 +275,7 @@ THRIFT_CONVERSION(t_const_value, ) {
   }
 #undef T_CONST_VALUE_CASE
 }
-THRIFT_CONVERSION(t_field, resolve_type(from.type), from.name, from.key) {
+THRIFT_CONVERSION(t_field, resolve_type< ::t_type>(from.type), from.name, from.key) {
   assert(to);
   THRIFT_ASSIGN_ANNOTATIONS();
   to->set_reference(from.reference);
@@ -289,7 +292,10 @@ THRIFT_CONVERSION(t_struct, g_program) {
   boost::for_each(from.members | boost::adaptors::transformed(convert<t_field>),
                   boost::bind(&::t_struct::append, to, _1));
 }
-THRIFT_CONVERSION(t_const, resolve_type(from.type), from.name, convert<t_const_value>(from.value)) {
+THRIFT_CONVERSION(t_const,
+                  resolve_type< ::t_type>(from.type),
+                  from.name,
+                  convert<t_const_value>(from.value)) {
   assert(to);
   THRIFT_ASSIGN_DOC();
 }
@@ -302,7 +308,7 @@ THRIFT_CONVERSION(t_const, resolve_type(from.type), from.name, convert<t_const_v
 }
 
 THRIFT_CONVERSION(t_function,
-                  resolve_type(from.returntype),
+                  resolve_type< ::t_type>(from.returntype),
                   from.name,
                   resolve_type< ::t_struct>(from.arglist),
                   resolve_type< ::t_struct>(from.xceptions),

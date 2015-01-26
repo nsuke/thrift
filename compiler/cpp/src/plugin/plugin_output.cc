@@ -93,7 +93,7 @@ struct TypeCache {
   typedef typename plugin::ToType<T>::type to_type;
   std::map<int64_t, to_type> cache;
 
-  template <typename T2 = T>
+  template <typename T2>
   int64_t store(T2* t) {
     intptr_t id = reinterpret_cast<intptr_t>(t);
     if (id) {
@@ -118,7 +118,7 @@ int64_t store_type(T* t);
   TypeCache<t_##type> type##_cache;                                                                \
   template <>                                                                                      \
   plugin::t_##type##_id store_type<t_##type>(t_##type * t) {                                       \
-    return type##_cache.store(t);                                                                  \
+    return type##_cache.store<t_##type>(t);                                                        \
   }
 T_STORE(type)
 T_STORE(const)
@@ -187,10 +187,11 @@ THRIFT_CONVERSION(t_const_value) {
   case t_const_value::CV_MAP:
     to.__isset.map_val = true;
     if (from && !from->get_map().empty()) {
-      std::transform(from->get_map().begin(),
-                     from->get_map().end(),
-                     std::inserter(to.map_val, to.map_val.begin()),
-                     pair_transform(convert< ::t_const_value>, convert< ::t_const_value>));
+      for (std::map< ::t_const_value*, ::t_const_value*>::const_iterator it = from->get_map().begin();
+           it != from->get_map().end();
+           it++) {
+        to.map_val.insert(std::make_pair(convert(it->first), convert(it->second)));
+      }
     }
     break;
   case t_const_value::CV_LIST:
