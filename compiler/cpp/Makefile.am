@@ -123,7 +123,7 @@ lib_LTLIBRARIES = libthriftc.la
 thrift_CPPFLAGS += -DTHRIFT_ENABLE_PLUGIN=1
 thrift_LDADD += libthriftc.la
 
-BUILT_SOURCES += $(plugin_gen)
+BUILT_SOURCES += $(plugin_gen) $(top_builddir)/lib/cpp/libthrift.la
 
 thrift_bootstrap_SOURCES = $(compiler_core)\
                            src/generate/t_cpp_generator.cc \
