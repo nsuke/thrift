@@ -68,7 +68,10 @@ using apache::thrift::transport::TFramedTransport;
   THRIFT_CONVERT_COMPLETE_DECL(from_type)
 
 #define THRIFT_CONVERSION(from_type, ...)                                                          \
-  THRIFT_CONVERT_FORWARD(from_type) { return new typename ToType<from_type>::type(__VA_ARGS__); }  \
+  THRIFT_CONVERT_FORWARD(from_type) {                                                              \
+    (void) from;                                                                                   \
+    return new typename ToType<from_type>::type(__VA_ARGS__);                                      \
+  }                                                                                                \
   THRIFT_CONVERT_COMPLETE(from_type)
 
 #define THRIFT_ASSIGN_DOC()                                                                        \
@@ -427,7 +430,7 @@ THRIFT_CONVERSION(t_program, from.path, from.name) {
   to->set_namespace(from.namespace_);
 }
 
-int GeneratorPlugin::exec(int argc, char* argv[]) {
+int GeneratorPlugin::exec(int, char* []) {
 #ifdef _WIN32
   _setmode(STDIN_FILENO, _O_BINARY);
 #endif
