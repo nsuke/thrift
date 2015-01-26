@@ -149,7 +149,6 @@ $(plugin_gen): gen.stamp
 
 libthriftc_la_SOURCES = $(compiler_core) \
                         $(plugin_gen) \
-                        src/plugin/util.h \
                         src/plugin/type_util.h \
                         src/plugin/plugin.h \
                         src/plugin/plugin.cc \

@@ -52,7 +52,7 @@ set(libparse_SOURCES
 add_library(libparse STATIC ${libparse_SOURCES})
 
 # Create the thrift compiler
-set( thrift_SOURCES
+set( compiler_core
     src/common.h
     src/common.cc
     src/md5.c
@@ -135,12 +135,12 @@ THRIFT_ADD_COMPILER(lua     "Enable compiler for Lua" ON)
 include_directories(${CMAKE_CURRENT_BINARY_DIR} src)
 
 if(NOT ${WITH_PLUGIN})
-    list(APPEND thrift-compiler_SOURCES ${thrift_SOURCES})
+    list(APPEND thrift-compiler_SOURCES ${compiler_core})
 endif()
 add_executable(thrift-compiler ${thrift-compiler_SOURCES})
 
 if(${WITH_PLUGIN})
-    add_executable(thrift-bootstrap ${thrift_SOURCES}
+    add_executable(thrift-bootstrap ${compiler_core}
         src/main.h
         src/main.cc
         src/generate/t_cpp_generator.cc
@@ -165,7 +165,7 @@ if(${WITH_PLUGIN})
 
     include(ThriftMacros)
     ADD_LIBRARY_THRIFT(thriftc
-        ${thrift_SOURCES}
+        ${compiler_core}
         ${PLUGIN_GEN_SOURCES}
         src/logging.cc
         src/plugin/plugin_output.h

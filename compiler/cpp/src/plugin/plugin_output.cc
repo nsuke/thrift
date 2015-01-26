@@ -26,7 +26,6 @@
 
 #include "plugin/plugin.h"
 #include "plugin/type_util.h"
-#include "plugin/util.h"
 #include "generate/t_generator.h"
 #include "thrift/protocol/TBinaryProtocol.h"
 #include "thrift/transport/TBufferTransports.h"

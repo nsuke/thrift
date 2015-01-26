@@ -157,7 +157,8 @@ void t_generator::parse_options(const string& options,
 
 t_generator* t_generator_registry::get_generator(t_program* program,
                                                  const string& language,
-                                                 const map<string, string>& parsed_options) {
+                                                 const map<string, string>& parsed_options,
+                                                 const std::string& options) {
   gen_map_t& the_map = get_generator_map();
   gen_map_t::iterator iter = the_map.find(language);
 
@@ -165,14 +166,14 @@ t_generator* t_generator_registry::get_generator(t_program* program,
     return NULL;
   }
 
-  return iter->second->get_generator(program, parsed_options, "");
+  return iter->second->get_generator(program, parsed_options, options);
 }
 
 t_generator* t_generator_registry::get_generator(t_program* program, const string& options) {
   string language;
   map<string, string> parsed_options;
   t_generator::parse_options(options, language, parsed_options);
-  return get_generator(program, language, parsed_options);
+  return get_generator(program, language, parsed_options, options);
 }
 
 t_generator_registry::gen_map_t& t_generator_registry::get_generator_map() {

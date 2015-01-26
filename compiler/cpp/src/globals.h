@@ -138,29 +138,4 @@ extern int g_allow_neg_field_keys;
  */
 extern int g_allow_64bit_consts;
 
-
-
-
-extern int g_debug;
-
-/**
- * Strictness level
- */
-extern int g_strict;
-
-/**
- * Warning level
- */
-extern int g_warn;
-
-/**
- * Verbose output
- */
-extern int g_verbose;
-
-
-/**
- * Current file being parsed
- */
-extern std::string g_curpath;
 #endif

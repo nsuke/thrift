@@ -27,7 +27,7 @@ namespace plugin {
 class MyCppGenerator : public GeneratorPlugin {
   virtual int generate(::t_program* program,
                        const std::map<std::string, std::string>& parsed_options) override {
-    t_generator* gen = t_generator_registry::get_generator(program, "cpp", parsed_options);
+    t_generator* gen = t_generator_registry::get_generator(program, "cpp", parsed_options, "");
     gen->generate_program();
     delete gen;
     return 0;

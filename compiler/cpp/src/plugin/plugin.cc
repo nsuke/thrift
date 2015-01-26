@@ -27,7 +27,6 @@
 #include <boost/smart_ptr.hpp>
 
 #include "plugin/type_util.h"
-#include "plugin/util.h"
 #include "generate/t_generator.h"
 #include "thrift/transport/TFDTransport.h"
 #include "thrift/transport/TBufferTransports.h"
@@ -418,9 +417,12 @@ THRIFT_CONVERSION(t_program, from.path, from.name) {
   std::for_each(from.cpp_includes.begin(),
                 from.cpp_includes.end(),
                 boost::bind(&::t_program::add_cpp_include, to, _1));
-  std::for_each(from.namespaces.begin(),
-                from.namespaces.end(),
-                binary_setter(to, &::t_program::set_namespace));
+  for (std::map<std::string, std::string>::const_iterator it = from.namespaces.begin();
+       it != from.namespaces.end();
+       it++) {
+    to->set_namespace(it->first, it->second);
+  }
+
   to->set_include_prefix(from.include_prefix);
   to->set_namespace(from.namespace_);
 }
