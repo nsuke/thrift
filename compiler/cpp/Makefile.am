@@ -23,7 +23,7 @@
 
 AM_YFLAGS = -d
 LIBS =
-BUILT_SOURCES = thrifty.cc thriftl.cc
+BUILT_SOURCES = thrifty.cc
 
 SUBDIRS = .
 
