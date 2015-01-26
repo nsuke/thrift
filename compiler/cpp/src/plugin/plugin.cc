@@ -99,7 +99,7 @@ using apache::thrift::transport::TFramedTransport;
 ::t_program* g_program = 0;
 
 template <typename C, typename S>
-struct CacheBase {
+struct TypeCache {
   C* operator[](const int64_t& k) {
     typename std::map<int64_t, C*>::iterator it = cache.find(k);
     if (it != cache.end()) {
@@ -109,21 +109,19 @@ struct CacheBase {
       if (cit == source->end()) {
         throw ThriftPluginError("Type not found");
       }
-      return (cache)[k] = compileForward(k, cit->second);
+      return (cache)[k] = convert_forward(cit->second);
     }
   }
 
   void compileAll() {
     boost::for_each(*source | boost::adaptors::map_keys,
-                    boost::bind(&CacheBase::compile, this, _1));
+                    boost::bind(&TypeCache::compile, this, _1));
   }
 
   std::map<int64_t, S> const* source;
 
 protected:
   std::map<int64_t, C*> cache;
-  virtual C* compileForward(const int64_t& k, const S& src) = 0;
-  virtual void compileComplete(const S& src, C* compiled) = 0;
 
 private:
   void compile(const int64_t& k) {
@@ -131,27 +129,12 @@ private:
     if (cit == source->end()) {
       throw ThriftPluginError("Type not found ");
     }
-    compileComplete(cit->second, (*this)[k]);
+    convert(cit->second, (*this)[k]);
   }
 };
-#define T_SCOPE_CACHE(type, name)                                                                  \
-  template <>                                                                                      \
-  ::type* convert_forward<type>(const type&);                                                      \
-  template <>                                                                                      \
-  void convert<type, ::type>(const type&, ::type*);                                                \
-  struct type##_cache : public CacheBase< ::type, type> {                                          \
-    virtual ::type* compileForward(const int64_t& k, const type& src) override {                   \
-      return convert_forward<type>(src);                                                           \
-    }                                                                                              \
-    virtual void compileComplete(const type& src, ::type* compiled) override {                     \
-      return convert<type, ::type>(src, compiled);                                                 \
-    }                                                                                              \
-  };                                                                                               \
-  type##_cache g_##name##_cache
-T_SCOPE_CACHE(t_type, type);
-T_SCOPE_CACHE(t_const, const);
-T_SCOPE_CACHE(t_service, service);
-#undef T_SCOPE_CACHE
+TypeCache< ::t_type, t_type> g_type_cache;
+TypeCache< ::t_const, t_const> g_const_cache;
+TypeCache< ::t_service, t_service> g_service_cache;
 
 void set_global_cache(const TypeRegistry& from) {
   g_type_cache.source = &from.types;
