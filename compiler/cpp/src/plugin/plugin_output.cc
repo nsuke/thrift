@@ -80,7 +80,7 @@ using namespace apache::thrift;
       std::transform(from->from_name.begin(),                                                      \
                      from->from_name.end(),                                                        \
                      std::back_inserter(to.to_name),                                               \
-                     convert<::type>);                                                             \
+                     convert< ::type>);                                                            \
     }                                                                                              \
   } while (0)
 
@@ -190,7 +190,7 @@ THRIFT_CONVERSION(t_const_value) {
       std::transform(from->get_map().begin(),
                      from->get_map().end(),
                      std::inserter(to.map_val, to.map_val.begin()),
-                     pair_transform(convert<::t_const_value>, convert<::t_const_value>));
+                     pair_transform(convert< ::t_const_value>, convert< ::t_const_value>));
     }
     break;
   case t_const_value::CV_LIST:

@@ -79,7 +79,7 @@ using apache::thrift::transport::TFramedTransport;
   } while (0)
 
 #define THRIFT_ASSIGN_ANNOTATIONS()                                                                \
-  THRIFT_ASSIGN_DOC();                                                                              \
+  THRIFT_ASSIGN_DOC();                                                                             \
   do {                                                                                             \
     if (from.__isset.annotations)                                                                  \
       to->annotations_ = from.annotations;                                                         \
@@ -137,7 +137,7 @@ private:
   ::type* convert_forward<type>(const type&);                                                      \
   template <>                                                                                      \
   void convert<type, ::type>(const type&, ::type*);                                                \
-  struct type##_cache : public CacheBase<::type, type> {                                           \
+  struct type##_cache : public CacheBase< ::type, type> {                                          \
     virtual ::type* compileForward(const int64_t& k, const type& src) override {                   \
       return convert_forward<type>(src);                                                           \
     }                                                                                              \
@@ -268,7 +268,7 @@ THRIFT_CONVERSION(t_const_value, ) {
   else {
     T_CONST_VALUE_CASE(identifier);
     if (from.__isset.enum_val)
-      to->set_enum(resolve_type<::t_enum>(from.enum_val));
+      to->set_enum(resolve_type< ::t_enum>(from.enum_val));
   }
 #undef T_CONST_VALUE_CASE
 }
@@ -276,7 +276,7 @@ THRIFT_CONVERSION(t_field, resolve_type(from.type), from.name, from.key) {
   assert(to);
   THRIFT_ASSIGN_ANNOTATIONS();
   to->set_reference(from.reference);
-  to->set_req(static_cast<::t_field::e_req>(from.req));
+  to->set_req(static_cast< ::t_field::e_req>(from.req));
   if (from.__isset.value) {
     to->set_value(convert(from.value));
   }
@@ -304,8 +304,8 @@ THRIFT_CONVERSION(t_const, resolve_type(from.type), from.name, convert<t_const_v
 THRIFT_CONVERSION(t_function,
                   resolve_type(from.returntype),
                   from.name,
-                  resolve_type<::t_struct>(from.arglist),
-                  resolve_type<::t_struct>(from.xceptions),
+                  resolve_type< ::t_struct>(from.arglist),
+                  resolve_type< ::t_struct>(from.xceptions),
                   from.is_oneway) {
   assert(to);
   THRIFT_ASSIGN_DOC();
@@ -345,7 +345,7 @@ THRIFT_CONVERT_FORWARD(t_type) {
 THRIFT_CONVERT_COMPLETE(t_type) {
 #define T_TYPE_CASE_T(case, type)                                                                  \
   else if (from.__isset.case##_val)                                                                \
-      convert<type, ::type>(from.case##_val, reinterpret_cast<::type*>(to))
+      convert<type, ::type>(from.case##_val, reinterpret_cast< ::type*>(to))
 #define T_TYPE_CASE(case) T_TYPE_CASE_T(case, t_##case)
 
   if (false) {
@@ -369,12 +369,12 @@ THRIFT_CONVERT_COMPLETE(t_type) {
 THRIFT_CONVERSION(t_scope, ) {
   assert(to);
 #define T_SCOPE_RESOLVE(type, name, a)                                                             \
-  for (std::vector<int64_t>::const_iterator it = from.name##s.cbegin(); it != from.name##s.cend(); \
+  for (std::vector<int64_t>::const_iterator it = from.name##s.begin(); it != from.name##s.end();   \
        it++) {                                                                                     \
     ::t_##type* t = resolve_##type a(*it);                                                         \
     to->add_##name(t->get_name(), t);                                                              \
   }
-  T_SCOPE_RESOLVE(type, type, <::t_type>);
+  T_SCOPE_RESOLVE(type, type, < ::t_type>);
   T_SCOPE_RESOLVE(const, constant, );
   T_SCOPE_RESOLVE(service, service, );
 #undef T_SCOPE_RESOLVE
@@ -388,13 +388,13 @@ THRIFT_CONVERSION(t_program, from.path, from.name) {
 
   to->set_out_path(from.out_path, from.out_path_is_absolute);
 
-  boost::for_each(from.typedefs | boost::adaptors::transformed(&resolve_type<::t_typedef>),
+  boost::for_each(from.typedefs | boost::adaptors::transformed(&resolve_type< ::t_typedef>),
                   boost::bind(&::t_program::add_typedef, to, _1));
-  boost::for_each(from.enums | boost::adaptors::transformed(&resolve_type<::t_enum>),
+  boost::for_each(from.enums | boost::adaptors::transformed(&resolve_type< ::t_enum>),
                   boost::bind(&::t_program::add_enum, to, _1));
   for (std::vector<int64_t>::const_iterator it = from.objects.begin(); it != from.objects.end();
        it++) {
-    ::t_struct* t2 = resolve_type<::t_struct>(*it);
+    ::t_struct* t2 = resolve_type< ::t_struct>(*it);
     if (t2->is_xception()) {
       to->add_xception(t2);
     } else {

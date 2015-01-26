@@ -62,7 +62,7 @@ void clear_global_cache();
   namespace plugin {                                                                               \
   class TYPE;                                                                                      \
   template <>                                                                                      \
-  struct ToType<::TYPE> {                                                                          \
+  struct ToType< ::TYPE> {                                                                         \
     typedef TYPE type;                                                                             \
   };                                                                                               \
   template <>                                                                                      \

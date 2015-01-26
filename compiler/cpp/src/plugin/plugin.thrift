@@ -37,14 +37,14 @@ typedef i64 t_const_id
 typedef i64 t_service_id
 
 enum t_base {
-    TYPE_VOID,
-    TYPE_STRING,
-    TYPE_BOOL,
-    TYPE_BYTE,
-    TYPE_I16,
-    TYPE_I32,
-    TYPE_I64,
-    TYPE_DOUBLE,
+    TYPE_VOID
+    TYPE_STRING
+    TYPE_BOOL
+    TYPE_BYTE
+    TYPE_I16
+    TYPE_I32
+    TYPE_I64
+    TYPE_DOUBLE
     TYPE_BINARY
 }
 
