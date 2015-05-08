@@ -36,11 +36,11 @@ build: build-arch build-indep
 build-arch: build-arch-stamp
 build-arch-stamp: configure-stamp
 
-	# Compile compiler
-	$(MAKE) -C $(CURDIR)/compiler/cpp
-
 	# Compile C++ library
 	$(MAKE) -C $(CURDIR)/lib/cpp
+
+	# Compile compiler
+	$(MAKE) -C $(CURDIR)/compiler/cpp
 
 	# Compile C (glib) library
 	$(MAKE) -C $(CURDIR)/lib/c_glib
