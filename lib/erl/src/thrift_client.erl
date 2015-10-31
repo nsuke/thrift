@@ -49,7 +49,10 @@ when is_atom(Function), is_list(Args) ->
 -spec send_call(#tclient{}, atom(), list()) -> {#tclient{}, ok}.
 send_call(Client = #tclient{}, Function, Args)
   when is_atom(Function), is_list(Args) ->
-    send_function_call(Client, Function, Args).
+    case send_function_call(Client, Function, Args) of
+      {ok, Client1} -> {Client1, ok};
+      Else -> Else
+    end.
 
 -spec close(#tclient{}) -> ok.
 close(#tclient{protocol=Protocol}) ->
