@@ -28,6 +28,7 @@
   "csharp-cpp_compact_framed-ip-ssl",
   "csharp-cpp_json_buffered-ip-ssl",
   "csharp-cpp_json_framed-ip-ssl",
+  "csharp-erl_binary_buffered-ip-ssl",
   "csharp-go_binary_buffered-ip-ssl",
   "csharp-go_binary_framed-ip-ssl",
   "csharp-go_compact_buffered-ip-ssl",
