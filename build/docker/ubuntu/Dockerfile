@@ -90,6 +90,7 @@ RUN apt-get install -y lua5.2 lua5.2-dev
 RUN apt-get install -y nodejs nodejs-dev nodejs-legacy npm
 
 # CSharp
+# TODO: Move MinGW32 deps out of this
 RUN apt-get install -y mono-gmcs mono-devel mono-xbuild mono-complete libmono-system-web2.0-cil \
     mingw32 mingw32-binutils mingw32-runtime nsis
 
@@ -101,6 +102,27 @@ RUN apt-get install -y gcc-multilib xdg-utils && \
     dpkg -i /tmp/dmd_2.065.0-0_amd64.deb && \
     rm /tmp/dmd_2.065.0-0_amd64.deb
 
+# TODO: merge into general deps
+RUN apt-get update && apt-get install -y \
+      apt-transport-https \
+      clang
+
+# Dart dependencies
+RUN curl https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+    curl https://storage.googleapis.com/download.dartlang.org/linux/debian/dart_stable.list > /etc/apt/sources.list.d/dart_stable.list && \
+    apt-get update && apt-get install -y dart
+ENV PATH /usr/lib/dart/bin:$PATH
+
+# TODO: merge into perl deps
+RUN apt-get update && apt-get install -y \
+      libio-socket-ssl-perl \
+      libnet-ssleay-perl \
+      libcrypt-ssleay-perl
+
+# TODO: merge into erlang deps
+RUN apt-get update && apt-get install -y \
+      rebar
+
 # Clean up
 RUN apt-get clean && \
     rm -rf /var/cache/apt/* && \
@@ -108,4 +130,7 @@ RUN apt-get clean && \
     rm -rf /tmp/* && \
     rm -rf /var/tmp/*
 
-WORKDIR $HOME
+ENV THRIFT_ROOT /thrift
+RUN mkdir -p $THRIFT_ROOT/src
+COPY scripts $THRIFT_ROOT
+WORKDIR $THRIFT_ROOT/src
