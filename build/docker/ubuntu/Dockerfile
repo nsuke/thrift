@@ -21,15 +21,32 @@ MAINTAINER Apache Thrift <dev@thrift.apache.org>
 ENV HOME /root
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update -y && apt-get dist-upgrade -y
-
 # General dependencies
-RUN apt-get install -y automake libtool flex bison pkg-config g++ libssl-dev make libqt4-dev git \
-    debhelper cmake
+RUN apt-get install -y \
+      apt-transport-https \
+      automake \
+      bison \
+      clang \
+      cmake \
+      debhelper \
+      flex \
+      g++ \
+      git \
+      libtool \
+      make \
+      pkg-config
 
 # C++ dependencies
-RUN apt-get install -y libboost-dev libboost-test-dev libboost-program-options-dev \
-    libboost-filesystem-dev libboost-system-dev libboost-thread-dev libevent-dev
+RUN apt-get install -y \
+      libboost-dev \
+      libboost-filesystem-dev \
+      libboost-program-options-dev \
+      libboost-system-dev \
+      libboost-test-dev \
+      libboost-thread-dev \
+      libevent-dev \
+      libqt4-dev \
+      libssl-dev
 
 # Java dependencies
 RUN apt-get install -y ant openjdk-7-jdk maven && \
@@ -44,7 +61,12 @@ RUN apt-get install -y ruby ruby-dev && \
     gem install bundler rake
 
 # Perl dependencies
-RUN apt-get install -y libbit-vector-perl libclass-accessor-class-perl
+RUN apt-get install -y \
+      libbit-vector-perl \
+      libclass-accessor-class-perl \
+      libcrypt-ssleay-perl \
+      libio-socket-ssl-perl \
+      libnet-ssleay-perl
 
 # Php dependencies
 RUN apt-get install -y php5 php5-dev php5-cli php-pear re2c phpunit
@@ -54,9 +76,13 @@ RUN apt-get install -y libglib2.0-dev
 
 # Erlang dependencies
 RUN echo 'deb http://packages.erlang-solutions.com/debian trusty contrib' > /etc/apt/sources.list.d/erlang_solutions.list && \
-    curl -sSL http://packages.erlang-solutions.com/debian/erlang_solutions.asc | sudo apt-key add - && \
-    apt-get update && \
-    apt-get install -y erlang-base erlang-eunit erlang-dev erlang-tools
+    curl -sSL http://packages.erlang-solutions.com/debian/erlang_solutions.asc | apt-key add - && \
+    apt-get update && apt-get install -y \
+      erlang-base \
+      erlang-eunit \
+      erlang-dev \
+      erlang-tools \
+      rebar
 
 # GO dependencies
 RUN curl -sSL https://storage.googleapis.com/golang/go1.4.2.linux-amd64.tar.gz | tar -C /usr/lib/ -xz && \
@@ -89,10 +115,15 @@ RUN apt-get install -y lua5.2 lua5.2-dev
 # Node.js dependencies
 RUN apt-get install -y nodejs nodejs-dev nodejs-legacy npm
 
-# CSharp
-# TODO: Move MinGW32 deps out of this
+# CSharp dependencies
 RUN apt-get install -y mono-gmcs mono-devel mono-xbuild mono-complete libmono-system-web2.0-cil \
-    mingw32 mingw32-binutils mingw32-runtime nsis
+
+# MinGW dependencies
+RUN apt-get install -y \
+      mingw32 \
+      mingw32-binutils \
+      mingw32-runtime \
+      nsis
 
 # D dependencies
 # THRIFT-2916: DMD pinned to 2.065.0-0 due to regression in 2.066
@@ -102,26 +133,11 @@ RUN apt-get install -y gcc-multilib xdg-utils && \
     dpkg -i /tmp/dmd_2.065.0-0_amd64.deb && \
     rm /tmp/dmd_2.065.0-0_amd64.deb
 
-# TODO: merge into general deps
-RUN apt-get update && apt-get install -y \
-      apt-transport-https \
-      clang
-
 # Dart dependencies
 RUN curl https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
     curl https://storage.googleapis.com/download.dartlang.org/linux/debian/dart_stable.list > /etc/apt/sources.list.d/dart_stable.list && \
     apt-get update && apt-get install -y dart
 ENV PATH /usr/lib/dart/bin:$PATH
-
-# TODO: merge into perl deps
-RUN apt-get update && apt-get install -y \
-      libio-socket-ssl-perl \
-      libnet-ssleay-perl \
-      libcrypt-ssleay-perl
-
-# TODO: merge into erlang deps
-RUN apt-get update && apt-get install -y \
-      rebar
 
 # Clean up
 RUN apt-get clean && \
