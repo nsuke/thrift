@@ -22,7 +22,7 @@ ENV HOME /root
 ENV DEBIAN_FRONTEND noninteractive
 
 # General dependencies
-RUN apt-get install -y \
+RUN apt-get update && apt-get install -y \
       apt-transport-https \
       automake \
       bison \
