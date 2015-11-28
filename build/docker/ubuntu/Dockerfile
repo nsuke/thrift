@@ -116,7 +116,12 @@ RUN apt-get install -y lua5.2 lua5.2-dev
 RUN apt-get install -y nodejs nodejs-dev nodejs-legacy npm
 
 # CSharp dependencies
-RUN apt-get install -y mono-gmcs mono-devel mono-xbuild mono-complete libmono-system-web2.0-cil \
+RUN apt-get install -y \
+      libmono-system-web2.0-cil \
+      mono-complete \
+      mono-devel \
+      mono-gmcs \
+      mono-xbuild
 
 # MinGW dependencies
 RUN apt-get install -y \
