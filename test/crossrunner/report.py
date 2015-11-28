@@ -17,6 +17,7 @@
 # under the License.
 #
 
+from __future__ import print_function
 import datetime
 import json
 import multiprocessing
@@ -138,16 +139,7 @@ class ExecReporter(TestReporter):
       self._lock.release()
 
   def killed(self):
-    self._lock.acquire()
-    try:
-      if self.out and not self.out.closed:
-        self._print_footer()
-        self._close()
-        self.out = None
-      else:
-        self._log.debug('Output stream is not available.')
-    finally:
-      self._lock.release()
+    self.end(None)
 
   _init_failure_exprs = {
     'server': list(map(re.compile, [
@@ -345,12 +337,13 @@ class SummaryReporter(TestReporter):
   def _assemble_log(self, title, indexes):
     if len(indexes) > 0:
       def add_prog_log(fp, test, prog_kind):
-        fp.write('*************************** %s message ***************************\n'
-                 % prog_kind)
+        print('*************************** %s message ***************************' % prog_kind,
+              file=fp)
         path = self.test_logfile(test.name, prog_kind, self.testdir)
         kwargs = {} if sys.version_info[0] < 3 else {'errors': 'replace'}
-        with open(path, 'r', **kwargs) as prog_fp:
-          fp.write(prog_fp.read())
+        if os.path.exists(path):
+          with open(path, 'r', **kwargs) as prog_fp:
+            print(prog_fp.read(), file=fp)
       filename = title.replace(' ', '_') + '.log'
       with open(os.path.join(self.logdir, filename), 'w+') as fp:
         for test in map(self._tests.__getitem__, indexes):
@@ -358,7 +351,7 @@ class SummaryReporter(TestReporter):
           add_prog_log(fp, test, test.server.kind)
           add_prog_log(fp, test, test.client.kind)
           fp.write('**********************************************************************\n\n')
-      self.out.write('%s are logged to test/%s/%s\n' % (title.capitalize(), LOG_DIR, filename))
+      print('%s are logged to test/%s/%s' % (title.capitalize(), LOG_DIR, filename))
 
   def end(self):
     self._print_footer()

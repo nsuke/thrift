@@ -16,6 +16,4 @@ if sys.version_info[0] == 2:
 else:
 
   path_join = os.path.join
-
-  def str_join(s, l):
-    return s.join(l)
+  str_join = str.join
