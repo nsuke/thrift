@@ -25,7 +25,8 @@ services:
   - docker
 
 install:
-  - docker pull nsuke/thrift:ubuntu
+  # TODO: Need external repository with master Dockerfile to reuse built layer across builds
+  # - docker pull apache/thrift-dev:ubuntu
   - docker build -t thrift-build build/docker/ubuntu
 
 script:
