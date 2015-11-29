@@ -66,6 +66,10 @@ RUN yum install -y nodejs nodejs-devel npm
 # C# Dependencies
 RUN yum install -y mono-core mono-devel mono-web-devel mono-extras mingw32-binutils mingw32-crt mingw32-nsis
 
+# CMake
+RUN curl -sSL https://cmake.org/files/v3.4/cmake-3.4.0.tar.gz | tar -xz && \
+    cd cmake-3.4.0 && ./bootstrap && make -j4 && make install
+
 # Clean up
 RUN rm -rf /tmp/* && \
     yum clean all
