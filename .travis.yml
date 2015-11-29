@@ -39,6 +39,7 @@ env:
     - DOCKER_CMD="none"
     - DOCKER_COMPILER="-e CC=gcc -e CXX=g++"
     - DISTRO=ubuntu
+    - THRIFT_CROSSTEST_CONCURRENCY=8
 
   matrix:
     - TEST_NAME="Cross Language Tests"
