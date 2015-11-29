@@ -26,8 +26,9 @@ services:
 
 install:
   # TODO: Need external repository with master Dockerfile to reuse built layer across builds
-  # - docker pull apache/thrift-dev:$DISTRO
-  - docker build -t thrift-build build/docker/$DISTRO
+  # - docker pull apache/thrift-dev:$DISTRO || true
+  - cp -r ./build/docker/scripts/*.sh ./build/docker/$DISTRO/scripts/
+  - docker build -q -t thrift-build build/docker/$DISTRO
 
 script:
   - docker run $DOCKER_COMPILER -v $(pwd):/thrift/src -it thrift-build $DOCKER_CMD

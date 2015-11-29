@@ -70,4 +70,7 @@ RUN yum install -y mono-core mono-devel mono-web-devel mono-extras mingw32-binut
 RUN rm -rf /tmp/* && \
     yum clean all
 
-WORKDIR $HOME
+ENV THRIFT_ROOT /thrift
+RUN mkdir -p $THRIFT_ROOT/src
+COPY scripts $THRIFT_ROOT
+WORKDIR $THRIFT_ROOT/src
