@@ -31,19 +31,19 @@ install:
   - docker build -q -t thrift-build build/docker/$DISTRO
 
 script:
-  - docker run $DOCKER_COMPILER -v $(pwd):/thrift/src -it thrift-build $DOCKER_CMD
+  - docker run $DOCKER_ENV -v $(pwd):/thrift/src -it thrift-build $DOCKER_CMD
 
 env:
   global:
     - TEST_NAME=""
     - DOCKER_CMD="none"
-    - DOCKER_COMPILER="-e CC=gcc -e CXX=g++"
+    - DOCKER_ENV="-e CC=gcc -e CXX=g++"
     - DISTRO=ubuntu
-    - THRIFT_CROSSTEST_CONCURRENCY=8
 
   matrix:
     - TEST_NAME="Cross Language Tests"
       DOCKER_CMD="../cross-test.sh"
+      DOCKER_ENV="-e CC=gcc -e CXX=g++ -e THRIFT_CROSSTEST_CONCURRENCY=8"
 
     - TEST_NAME="Autotools (All)"
       DOCKER_CMD="../autotools.sh"
@@ -54,19 +54,19 @@ env:
       DOCKER_CMD="../cmake.sh"
     - TEST_NAME="C C++ (Clang)"
       DOCKER_CMD="../cmake.sh -DWITH_PYTHON=OFF -DWITH_JAVA=OFF -DWITH_HASKELL=OFF"
-      DOCKER_COMPILER="-e CC=clang -e CXX=clang++"
+      DOCKER_ENV="-e CC=clang -e CXX=clang++"
 
     - TEST_NAME="C++ (Boost Thread)"
       DOCKER_CMD="../cmake.sh -DWITH_BOOSTTHREADS=ON -DWITH_PYTHON=OFF -DWITH_C_GLIB=OFF -DWITH_JAVA=OFF -DWITH_HASKELL=OFF"
     - TEST_NAME="C++ (Boost Thread - Clang)"
       DOCKER_CMD="../cmake.sh -DWITH_BOOSTTHREADS=ON -DWITH_PYTHON=OFF -DWITH_C_GLIB=OFF -DWITH_JAVA=OFF -DWITH_HASKELL=OFF"
-      DOCKER_COMPILER="-e CC=clang -e CXX=clang++"
+      DOCKER_ENV="-e CC=clang -e CXX=clang++"
 
     - TEST_NAME="C++ (Std Thread)"
       DOCKER_CMD="../cmake.sh -DWITH_STDTHREADS=ON -DCMAKE_CXX_FLAGS='-std=c++11' -DWITH_PYTHON=OFF -DWITH_C_GLIB=OFF -DWITH_JAVA=OFF -DWITH_HASKELL=OFF"
     - TEST_NAME="C++ (Std Thread - Clang)"
       DOCKER_CMD="../cmake.sh -DWITH_STDTHREADS=ON -DCMAKE_CXX_FLAGS='-std=c++11' -DWITH_PYTHON=OFF -DWITH_C_GLIB=OFF -DWITH_JAVA=OFF -DWITH_HASKELL=OFF"
-      DOCKER_COMPILER="-e CC=clang -e CXX=clang++"
+      DOCKER_ENV="-e CC=clang -e CXX=clang++"
 
     - TEST_NAME="make dist"
       DOCKER_CMD="../make-dist.sh"
