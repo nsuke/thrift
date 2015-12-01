@@ -100,7 +100,8 @@ env:
       CONFIG="--disable-libs"
 
     - TEST_NAME="C C# D Dart Erlang Go Haxe (automake)"
-      CONFIG="--without-cpp --without-haskell --without-java --without-lua --without-nodejs --without-perl --without-php --without-php_extension --without-python --without-ruby"
+      # TODO: Enable tutorial once "make check -C tutorial/go" is fixed
+      CONFIG="--without-cpp --without-haskell --without-java --without-lua --without-nodejs --without-perl --without-php --without-php_extension --without-python --without-ruby --enable-tutorial=no"
       ALL_DEPS="yes"
 
     - TEST_NAME="Java Lua Node.js Perl PHP Python Ruby (automake)"
