@@ -3,4 +3,4 @@ set -ev
 
 ./bootstrap.sh
 ./configure $*
-make check -j3
+make check -j $CONCURRENT_JOBS

@@ -3,7 +3,7 @@ set -ev
 
 ./bootstrap.sh
 ./configure --enable-tutorial=no
-make -j3 precross
+make -j $CONCURRENT_JOBS precross
 
 set +e
 make cross

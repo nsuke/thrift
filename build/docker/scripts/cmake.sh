@@ -17,6 +17,6 @@ for LIB in $BUILD_LIBS; do
     exit 1
   fi
 done
-$MAKEPROG -j3
+$MAKEPROG -j $CONCURRENT_JOBS
 cpack
 ctest -VV -E "(concurrency_test|processor_test)"

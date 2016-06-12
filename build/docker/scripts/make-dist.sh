@@ -3,4 +3,4 @@ set -ev
 
 ./bootstrap.sh
 ./configure $*
-make dist
+make dist -j $CONCURRENT_JOBS
