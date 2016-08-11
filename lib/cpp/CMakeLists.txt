@@ -109,7 +109,7 @@ if(WITH_BOOSTTHREADS)
         src/thrift/concurrency/BoostMutex.cpp
     )
     list(APPEND SYSLIBS "${Boost_LIBRARIES}")
-elseif(UNIX AND NOT WITH_STDTHREADS)
+elseif(WITH_PTHREADS)
     if(ANDROID)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
     else()
@@ -120,7 +120,7 @@ elseif(UNIX AND NOT WITH_STDTHREADS)
         src/thrift/concurrency/Mutex.cpp
         src/thrift/concurrency/Monitor.cpp
     )
-else()
+elseif(WITH_STDTHREADS)
     if(UNIX)
         if(ANDROID)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
@@ -133,6 +133,8 @@ else()
         src/thrift/concurrency/StdMutex.cpp
         src/thrift/concurrency/StdMonitor.cpp
     )
+else()
+    message(FATAL_ERROR "C++ library thread backend is not specified")
 endif()
 
 # Thrift non blocking server
