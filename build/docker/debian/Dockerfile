@@ -182,5 +182,5 @@ ENV LC_ALL C.UTF-8
 
 ENV THRIFT_ROOT /thrift
 RUN mkdir -p $THRIFT_ROOT/src
-COPY Dockerfile scripts $THRIFT_ROOT/
+COPY Dockerfile $THRIFT_ROOT/
 WORKDIR $THRIFT_ROOT/src
