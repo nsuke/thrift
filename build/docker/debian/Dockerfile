@@ -121,10 +121,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN apt-get update && apt-get install -y --no-install-recommends \
 `# CSharp dependencies` \
       libmono-system-web2.0-cil \
-      mono-complete \
-      mono-devel \
-      mono-gmcs \
-      mono-xbuild
+      mono-devel
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 `# D dependencies` \
