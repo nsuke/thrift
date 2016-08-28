@@ -17,20 +17,59 @@
 # under the License.
 #
 
-THRIFT = $(top_builddir)/compiler/cpp/thrift
-if MONO_MCS
-CSC=mcs
-else
-CSC=gmcs
-endif
+GENERATED = \
+	gen-csharp/Thrift/Test/Bonk.cs \
+	gen-csharp/Thrift/Test/Bools.cs \
+	gen-csharp/Thrift/Test/BoolTest.cs \
+	gen-csharp/Thrift/Test/CrazyNesting.cs \
+	gen-csharp/Thrift/Test/EmptyStruct.cs \
+	gen-csharp/Thrift/Test/GuessProtocolStruct.cs \
+	gen-csharp/Thrift/Test/Insanity.cs \
+	gen-csharp/Thrift/Test/LargeDeltas.cs \
+	gen-csharp/Thrift/Test/ListBonks.cs \
+	gen-csharp/Thrift/Test/ListTypeVersioningV1.cs \
+	gen-csharp/Thrift/Test/ListTypeVersioningV2.cs \
+	gen-csharp/Thrift/Test/NestedListsBonk.cs \
+	gen-csharp/Thrift/Test/NestedListsI32x2.cs \
+	gen-csharp/Thrift/Test/NestedListsI32x3.cs \
+	gen-csharp/Thrift/Test/NestedMixedx2.cs \
+	gen-csharp/Thrift/Test/Numberz.cs \
+	gen-csharp/Thrift/Test/OneField.cs \
+	gen-csharp/Thrift/Test/SecondService.cs \
+	gen-csharp/Thrift/Test/StructA.cs \
+	gen-csharp/Thrift/Test/StructB.cs \
+	gen-csharp/Thrift/Test/ThriftTest.Constants.cs \
+	gen-csharp/Thrift/Test/ThriftTest.cs \
+	gen-csharp/Thrift/Test/VersioningTestV1.cs \
+	gen-csharp/Thrift/Test/VersioningTestV2.cs \
+	gen-csharp/Thrift/Test/Xception.cs \
+	gen-csharp/Thrift/Test/Xception2.cs \
+	gen-csharp/Thrift/Test/Xtruct.cs \
+	gen-csharp/Thrift/Test/Xtruct2.cs \
+	gen-csharp/Thrift/Test/Xtruct3.cs
 
-stubs: $(top_srcdir)/test/ThriftTest.thrift
-	$(THRIFT) --gen csharp -o . $(top_srcdir)/test/ThriftTest.thrift
+BUILT_SOURCES = $(GENERATED)
+
+THRIFT = $(top_builddir)/compiler/cpp/thrift
+
+$(GENERATED): $(top_srcdir)/test/ThriftTest.thrift
+	$(THRIFT) --gen csharp -o . $<
 
 precross: TestClientServer.exe
 
-ThriftImpl.dll: stubs
-	$(CSC) /t:library /out:./ThriftImpl.dll /recurse:./gen-csharp/Thrift/Test/*.cs /reference:../../Thrift.dll
+ThriftImpl.dll: $(GENERATED) ../../Thrift.dll
+	$(CSC) $(CSC_DEFINES) /t:library /out:$@ /reference:../../Thrift.dll $(GENERATED)
 
-TestClientServer.exe: TestClient.cs TestServer.cs Program.cs ThriftImpl.dll
-	$(CSC)  /out:TestClientServer.exe /reference:../../Thrift.dll /reference:ThriftImpl.dll TestClient.cs TestServer.cs Program.cs
+SRCS = TestClient.cs TestServer.cs Program.cs
+
+TestClientServer.exe: $(SRCS) ThriftImpl.dll
+	$(CSC) $(CSC_DEFINES) /out:$@ /reference:../../Thrift.dll /reference:ThriftImpl.dll $(SRCS)
+
+clean-local:
+	$(RM) -rf gen-csharp *.exe *.dll
+
+TESTPORT = 9500
+check-local: TestClientServer.exe
+	MONO_PATH=../../ timeout 10 ./TestClientServer.exe server --port=$(TESTPORT) &
+	sleep 1
+	MONO_PATH=../../ ./TestClientServer.exe client --port=$(TESTPORT)

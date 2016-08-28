@@ -823,10 +823,13 @@ namespace Test
             }
 
             Console.Write("Test Calltime()");
-            var startt = DateTime.UtcNow;
-            for ( int k=0; k<1000; ++k )
+            var times = 50;
+            sw.Reset();
+            sw.Start();
+            for (int k = 0; k < times; ++k)
                 client.testVoid();
-            Console.WriteLine(" = " + (DateTime.UtcNow - startt).TotalSeconds.ToString() + " ms a testVoid() call" );
+            sw.Stop();
+            Console.WriteLine(" = {0} ms a testVoid() call", sw.ElapsedMilliseconds / times);
             return returnCode;
         }
     }
