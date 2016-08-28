@@ -200,5 +200,5 @@ ENV PATH /usr/lib/dart/bin:$PATH
 
 ENV THRIFT_ROOT /thrift
 RUN mkdir -p $THRIFT_ROOT/src
-COPY Dockerfile scripts $THRIFT_ROOT/
+COPY Dockerfile $THRIFT_ROOT/
 WORKDIR $THRIFT_ROOT/src
