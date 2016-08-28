@@ -25,7 +25,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DOCKER_IMAGE=nsuke/thrift:$DISTRO
 
-travis_wait docker pull $DOCKER_IMAGE
+docker pull $DOCKER_IMAGE
 cd ${SCRIPT_DIR}/$DISTRO
 docker run $DOCKER_IMAGE bash -c 'cd .. && sha512sum Dockerfile' > .Dockerfile.sha512
 sha512sum -c .Dockerfile.sha512
