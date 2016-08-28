@@ -23,7 +23,6 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DOCKER_IMAGE=nsuke/thrift:$DISTRO
 
 docker pull $DOCKER_IMAGE
 cd ${SCRIPT_DIR}/$DISTRO

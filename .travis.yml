@@ -26,12 +26,14 @@ services:
   - docker
 
 install:
+  - export DOCKER_IMAGE=nsuke/thrift:$DISTRO
   - (travis_wait ./build/docker/check_unmodified.sh && touch .unmodified) || true
+  - if [ ! -f .unmodified ]; then export DOCKER_IMAGE=thrift-build; fi
   - if [ ! -f .unmodified ]; then cp -r ./build/docker/scripts/*.sh ./build/docker/$DISTRO/scripts/; fi
-  - if [ ! -f .unmodified ]; then travis_retry travis_wait docker build -q -t thrift-build build/docker/$DISTRO; fi
+  - if [ ! -f .unmodified ]; then travis_retry travis_wait docker build -q -t $DOCKER_IMAGE build/docker/$DISTRO; fi
 
 script:
-  - docker run --net=host -e BUILD_LIBS="$BUILD_LIBS" $BUILD_ENV -v $(pwd):/thrift/src -it thrift-build $BUILD_CMD $BUILD_ARG
+  - docker run --net=host -e BUILD_LIBS="$BUILD_LIBS" $BUILD_ENV -v $(pwd):/thrift/src -it $DOCKER_IMAGE $BUILD_CMD $BUILD_ARG
 
 env:
   global:
