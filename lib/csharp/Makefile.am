@@ -25,11 +25,9 @@ endif
 
 if NET_2_0
 export CSC_DEFINES = -sdk:2
-else
-export CSC_DEFINES = -sdk:4.5
 endif
 
-SUBDIRS = . test/ThriftTest test/Multiplex
+SUBDIRS = . test/Multiplex
 
 THRIFTCODE = \
             src/Collections/THashSet.cs \
@@ -92,9 +90,6 @@ Thrift.dll: $(THRIFTCODE)
 
 clean-local:
 	$(RM) Thrift.dll
-
-precross: all-local
-	$(MAKE) -C test/ThriftTest precross
 
 EXTRA_DIST = \
              $(THRIFTCODE) \

@@ -50,26 +50,38 @@ GENERATED = \
 
 BUILT_SOURCES = $(GENERATED)
 
+if MONO_MCS
+export CSC = mcs
+else
+export CSC = gmcs
+endif
+
+if NET_2_0
+export CSC_DEFINES = -sdk:2
+endif
+
+LIBDIR = $(top_builddir)/lib/csharp
+
 THRIFT = $(top_builddir)/compiler/cpp/thrift
 
-$(GENERATED): $(top_srcdir)/test/ThriftTest.thrift
+$(GENERATED): $(top_srcdir)/test/ThriftTest.thrift $(THRIFT)
 	$(THRIFT) --gen csharp -o . $<
 
 precross: TestClientServer.exe
 
-ThriftImpl.dll: $(GENERATED) ../../Thrift.dll
-	$(CSC) $(CSC_DEFINES) -t:library -out:$@ /reference:../../Thrift.dll $(GENERATED)
+ThriftImpl.dll: $(GENERATED) $(LIBDIR)/Thrift.dll
+	$(CSC) $(CSC_DEFINES) -t:library -out:$@ /reference:$(LIBDIR)/Thrift.dll $(GENERATED)
 
 SRCS = TestClient.cs TestServer.cs Program.cs
 
 TestClientServer.exe: $(SRCS) ThriftImpl.dll
-	$(CSC) $(CSC_DEFINES) -out:$@ -reference:../../Thrift.dll -reference:ThriftImpl.dll $(SRCS)
+	$(CSC) $(CSC_DEFINES) -out:$@ -reference:$(LIBDIR)/Thrift.dll -reference:ThriftImpl.dll $(SRCS)
 
 clean-local:
 	$(RM) -rf gen-csharp *.exe *.dll
 
 TESTPORT = 9500
 check-local: TestClientServer.exe
-	MONO_PATH=../../ timeout 10 mono TestClientServer.exe server --port=$(TESTPORT) &
+	MONO_PATH=$(LIBDIR) timeout 10 mono TestClientServer.exe server --port=$(TESTPORT) &
 	sleep 1
-	MONO_PATH=../../ mono TestClientServer.exe client --port=$(TESTPORT)
+	MONO_PATH=$(LIBDIR) mono TestClientServer.exe client --port=$(TESTPORT)

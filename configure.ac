@@ -769,6 +769,7 @@ AC_CONFIG_FILES([
   test/features/Makefile
   test/c_glib/Makefile
   test/cpp/Makefile
+  test/csharp/Makefile
   test/erl/Makefile
   test/go/Makefile
   test/haxe/Makefile
