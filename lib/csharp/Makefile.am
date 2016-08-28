@@ -24,7 +24,9 @@ export CSC = gmcs
 endif
 
 if NET_2_0
-export CSC_DEFINES = /d:NET_2_0
+export CSC_DEFINES = -sdk:2
+else
+export CSC_DEFINES = -sdk:4.5
 endif
 
 SUBDIRS = . test/ThriftTest test/Multiplex
@@ -86,7 +88,7 @@ THRIFTCODE = \
 all-local: Thrift.dll
 
 Thrift.dll: $(THRIFTCODE)
-	$(CSC) $(CSC_DEFINES) $(THRIFTCODE) /out:$@ /target:library /reference:System.Web
+	$(CSC) $(CSC_DEFINES) $(THRIFTCODE) -out:$@ -target:library -reference:System.Web
 
 clean-local:
 	$(RM) Thrift.dll

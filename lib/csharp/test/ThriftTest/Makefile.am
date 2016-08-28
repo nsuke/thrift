@@ -58,12 +58,12 @@ $(GENERATED): $(top_srcdir)/test/ThriftTest.thrift
 precross: TestClientServer.exe
 
 ThriftImpl.dll: $(GENERATED) ../../Thrift.dll
-	$(CSC) $(CSC_DEFINES) /t:library /out:$@ /reference:../../Thrift.dll $(GENERATED)
+	$(CSC) $(CSC_DEFINES) -t:library -out:$@ /reference:../../Thrift.dll $(GENERATED)
 
 SRCS = TestClient.cs TestServer.cs Program.cs
 
 TestClientServer.exe: $(SRCS) ThriftImpl.dll
-	$(CSC) $(CSC_DEFINES) /out:$@ /reference:../../Thrift.dll /reference:ThriftImpl.dll $(SRCS)
+	$(CSC) $(CSC_DEFINES) -out:$@ -reference:../../Thrift.dll -reference:ThriftImpl.dll $(SRCS)
 
 clean-local:
 	$(RM) -rf gen-csharp *.exe *.dll
