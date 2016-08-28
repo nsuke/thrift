@@ -212,6 +212,8 @@ erl_crash.dump
 /lib/haxe/test/bin
 /lib/hs/dist
 /lib/java/build
+/lib/js/dist
+/lib/js/doc
 /lib/js/test/build
 /lib/nodejs/coverage
 /lib/nodejs/node_modules/
@@ -229,7 +231,6 @@ erl_crash.dump
 /lib/rb/ext/conftest.dSYM/
 /lib/rb/ext/mkmf.log
 /lib/rb/ext/thrift_native.bundle
-/lib/rb/ext/thrift_native.so
 /lib/rb/test/
 /lib/rb/thrift-*.gem
 /lib/php/src/ext/thrift_protocol/Makefile.*
