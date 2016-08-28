@@ -70,7 +70,7 @@ $(GENERATED): $(top_srcdir)/test/ThriftTest.thrift $(THRIFT)
 precross: TestClientServer.exe
 
 ThriftImpl.dll: $(GENERATED) $(LIBDIR)/Thrift.dll
-	$(CSC) $(CSC_DEFINES) -t:library -out:$@ /reference:$(LIBDIR)/Thrift.dll $(GENERATED)
+	$(CSC) $(CSC_DEFINES) -t:library -out:$@ -reference:$(LIBDIR)/Thrift.dll $(GENERATED)
 
 SRCS = TestClient.cs TestServer.cs Program.cs
 

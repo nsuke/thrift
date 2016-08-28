@@ -30,7 +30,7 @@ namespace Test.Multiplex.Client
 {
     public class TestClient
     {
-        private void Run(int port)
+        static void Execute(int port)
         {
             try
             {
@@ -67,21 +67,15 @@ namespace Test.Multiplex.Client
             }
         }
 
-        public static void Execute(int port)
-        {
-            TestClient client = new TestClient();
-            client.Run(port);
-        }
-
         static void Main(string[] args)
         {
-            var port = 9090;
-            if (args.Length > 0) {
+            int port = 9090;
+            if (args.Length > 0)
+            {
                 port = ushort.Parse(args[0]);
             }
             Execute(port);
             Console.WriteLine("done.");
-            Console.ReadLine();
         }
     }
 }

@@ -30,22 +30,7 @@ namespace Test.Multiplex.Server
 {
     public class TestServer
     {
-        public interface ITestHandler
-        {
-            void SetServer(TServer aServer);
-        }
-
-        protected class TestHandlerImpl : ITestHandler
-        {
-            private TServer Server;
-
-            public void SetServer(TServer aServer)
-            {
-                Server = aServer;
-            }
-        }
-
-        protected class BenchmarkServiceImpl : TestHandlerImpl, BenchmarkService.Iface
+        class BenchmarkServiceImpl : BenchmarkService.Iface
         {
             public int fibonacci(sbyte n)
             {
@@ -63,8 +48,7 @@ namespace Test.Multiplex.Server
             }
         }
 
-
-        protected class AggrServiceImpl : TestHandlerImpl,  Aggr.Iface
+        class AggrServiceImpl : Aggr.Iface
         {
             List<int> values = new List<int>();
 
@@ -100,26 +84,20 @@ namespace Test.Multiplex.Server
 
                 TServer ServerEngine = new TSimpleServer(multiplex, servertrans, TransportFactory, ProtocolFactory);
 
-                (benchHandler as ITestHandler).SetServer(ServerEngine);
-                (aggrHandler as ITestHandler).SetServer(ServerEngine);
-
                 Console.WriteLine("Starting the server ...");
                 ServerEngine.Serve();
-
-                (benchHandler as ITestHandler).SetServer(null);
-                (aggrHandler as ITestHandler).SetServer(null);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
-            Console.WriteLine("done.");
         }
 
         static void Main(string[] args)
         {
-            var port = 9090;
-            if (args.Length > 0) {
+            int port = 9090;
+            if (args.Length > 0)
+            {
                 port = ushort.Parse(args[0]);
             }
             Execute(port);

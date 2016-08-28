@@ -33,13 +33,13 @@ gen-csharp/BenchmarkService.cs gen-csharp/Error.cs: $(top_srcdir)/lib/rb/benchma
 	$(THRIFT) --gen csharp $<
 
 ThriftImpl.dll: Multiplex.Test.Common.cs $(GENERATED) ../../Thrift.dll
-	$(CSC) $(CSC_DEFINES) -t:library -out:./ThriftImpl.dll -reference:../../Thrift.dll $(GENERATED) $(GENERATED) $<
+	$(CSC) $(CSC_DEFINES) -t:library -out:./ThriftImpl.dll -reference:../../Thrift.dll $(GENERATED) $<
 
 MultiplexClient.exe: Client/Multiplex.Test.Client.cs ThriftImpl.dll
 	$(CSC) $(CSC_DEFINES) -out:$@ -reference:../../Thrift.dll -reference:ThriftImpl.dll $<
 
 MultiplexServer.exe: Server/Multiplex.Test.Server.cs ThriftImpl.dll
-	$(CSC) $(CSC_DEFINES) -out:$@ /reference:../../Thrift.dll -reference:ThriftImpl.dll $<
+	$(CSC) $(CSC_DEFINES) -out:$@ -reference:../../Thrift.dll -reference:ThriftImpl.dll $<
 
 clean-local:
 	$(RM) -rf gen-csharp *.exe *.dll
