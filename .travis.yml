@@ -26,8 +26,9 @@ services:
   - docker
 
 install:
-  - cp -r ./build/docker/scripts/*.sh ./build/docker/$DISTRO/scripts/
-  - travis_retry travis_wait docker build -q -t thrift-build build/docker/$DISTRO
+  - (./build/docker/check_unmodified.sh && touch .unmodified) || true
+  - if [ ! -f .unmodified ]; then cp -r ./build/docker/scripts/*.sh ./build/docker/$DISTRO/scripts/; fi
+  - if [ ! -f .unmodified ]; then travis_retry travis_wait docker build -q -t thrift-build build/docker/$DISTRO; fi
 
 script:
   - docker run --net=host -e BUILD_LIBS="$BUILD_LIBS" $BUILD_ENV -v $(pwd):/thrift/src -it thrift-build $BUILD_CMD $BUILD_ARG
