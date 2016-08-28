@@ -47,6 +47,6 @@ clean-local:
 TESTPORT = 9501
 check-local: MultiplexServer.exe MultiplexClient.exe
 	echo $(TESTPORT)
-	MONO_PATH=../../ timeout 10 ./MultiplexServer.exe $(TESTPORT) &
+	MONO_PATH=../../ timeout 10 mono MultiplexServer.exe $(TESTPORT) &
 	sleep 1
-	MONO_PATH=../../ ./MultiplexClient.exe $(TESTPORT)
+	MONO_PATH=../../ mono MultiplexClient.exe $(TESTPORT)

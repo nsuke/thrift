@@ -70,6 +70,6 @@ clean-local:
 
 TESTPORT = 9500
 check-local: TestClientServer.exe
-	MONO_PATH=../../ timeout 10 ./TestClientServer.exe server --port=$(TESTPORT) &
+	MONO_PATH=../../ timeout 10 mono TestClientServer.exe server --port=$(TESTPORT) &
 	sleep 1
-	MONO_PATH=../../ ./TestClientServer.exe client --port=$(TESTPORT)
+	MONO_PATH=../../ mono TestClientServer.exe client --port=$(TESTPORT)
