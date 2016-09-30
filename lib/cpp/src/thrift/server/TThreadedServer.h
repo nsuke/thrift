@@ -35,7 +35,8 @@ namespace server {
  * released when the client disconnects.  This server is used to make a dynamically
  * scalable server up to the concurrent connection limit.
  *
- * The thread factory will be changed to a non-detached type.
+ * The thread factory cannot be set to use detachable threads at creation time or an
+ * std::invalid_argument exception will be thrown.
  */
 class TThreadedServer : public TServerFramework {
 public:
@@ -46,7 +47,7 @@ public:
       const boost::shared_ptr<apache::thrift::protocol::TProtocolFactory>& protocolFactory,
       const boost::shared_ptr<apache::thrift::concurrency::ThreadFactory>& threadFactory
       = boost::shared_ptr<apache::thrift::concurrency::ThreadFactory>(
-          new apache::thrift::concurrency::PlatformThreadFactory));
+          new apache::thrift::concurrency::PlatformThreadFactory(false)));
 
   TThreadedServer(
       const boost::shared_ptr<apache::thrift::TProcessor>& processor,
@@ -55,7 +56,7 @@ public:
       const boost::shared_ptr<apache::thrift::protocol::TProtocolFactory>& protocolFactory,
       const boost::shared_ptr<apache::thrift::concurrency::ThreadFactory>& threadFactory
       = boost::shared_ptr<apache::thrift::concurrency::ThreadFactory>(
-          new apache::thrift::concurrency::PlatformThreadFactory));
+          new apache::thrift::concurrency::PlatformThreadFactory(false)));
 
   TThreadedServer(
       const boost::shared_ptr<apache::thrift::TProcessorFactory>& processorFactory,
@@ -66,7 +67,7 @@ public:
       const boost::shared_ptr<apache::thrift::protocol::TProtocolFactory>& outputProtocolFactory,
       const boost::shared_ptr<apache::thrift::concurrency::ThreadFactory>& threadFactory
       = boost::shared_ptr<apache::thrift::concurrency::ThreadFactory>(
-          new apache::thrift::concurrency::PlatformThreadFactory));
+          new apache::thrift::concurrency::PlatformThreadFactory(false)));
 
   TThreadedServer(
       const boost::shared_ptr<apache::thrift::TProcessor>& processor,
@@ -77,7 +78,7 @@ public:
       const boost::shared_ptr<apache::thrift::protocol::TProtocolFactory>& outputProtocolFactory,
       const boost::shared_ptr<apache::thrift::concurrency::ThreadFactory>& threadFactory
       = boost::shared_ptr<apache::thrift::concurrency::ThreadFactory>(
-          new apache::thrift::concurrency::PlatformThreadFactory));
+          new apache::thrift::concurrency::PlatformThreadFactory(false)));
 
   virtual ~TThreadedServer();
 

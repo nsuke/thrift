@@ -73,6 +73,7 @@ TFileTransport::TFileTransport(string path, bool readOnly)
     eofSleepTime_(DEFAULT_EOF_SLEEP_TIME_US),
     corruptedEventSleepTime_(DEFAULT_CORRUPTED_SLEEP_TIME_US),
     writerThreadIOErrorSleepTime_(DEFAULT_WRITER_THREAD_SLEEP_TIME_US),
+    threadFactory_(false),
     dequeueBuffer_(NULL),
     enqueueBuffer_(NULL),
     notFull_(&mutex_),
@@ -87,7 +88,6 @@ TFileTransport::TFileTransport(string path, bool readOnly)
     lastBadChunk_(0),
     numCorruptedEventsInChunk_(0),
     readOnly_(readOnly) {
-  threadFactory_.setDetached(false);
   openLogFile();
 }
 

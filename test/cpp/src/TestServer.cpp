@@ -750,8 +750,7 @@ int main(int argc, char** argv) {
       // if using header
       server->setOutputProtocolFactory(boost::shared_ptr<TProtocolFactory>());
     }
-    apache::thrift::concurrency::PlatformThreadFactory factory;
-    factory.setDetached(false);
+    apache::thrift::concurrency::PlatformThreadFactory factory(false);
     boost::shared_ptr<apache::thrift::concurrency::Runnable> serverThreadRunner(server);
     boost::shared_ptr<apache::thrift::concurrency::Thread> thread
         = factory.newThread(serverThreadRunner);

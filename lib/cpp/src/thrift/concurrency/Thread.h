@@ -135,13 +135,16 @@ private:
  * object for execution
  */
 class ThreadFactory {
+protected:
+  ThreadFactory(bool detached) : detached_(detached) { }
+
 public:
-  virtual ~ThreadFactory() {}
+  virtual ~ThreadFactory() { }
 
   /**
    * Gets current detached mode
    */
-  virtual bool isDetached() const = 0;
+  bool isDetached() const { return detached_; }
 
   /**
    * Create a new thread.
@@ -149,16 +152,17 @@ public:
   virtual boost::shared_ptr<Thread> newThread(boost::shared_ptr<Runnable> runnable) const = 0;
 
   /**
-   * Sets detached mode of threads
-   */
-  virtual void setDetached(bool detached) = 0;
-
-  static const Thread::id_t unknown_thread_id;
-
-  /**
    * Gets the current thread id or unknown_thread_id if the current thread is not a thrift thread
    */
   virtual Thread::id_t getCurrentThreadId() const = 0;
+
+  /**
+   * For code readability define the unknown/undefined thread id
+   */
+  static const Thread::id_t unknown_thread_id;
+
+private:
+  bool detached_;
 };
 
 }

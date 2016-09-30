@@ -75,12 +75,11 @@ public:
   Writer(boost::shared_ptr<ReadWriteMutex> rwlock) : Locker(rwlock, true) {}
 };
 
-void test_starve(PosixThreadFactory::POLICY policy) {
+void test_starve(PosixThreadFactory::Policy::value policy) {
   // the man pages for pthread_wrlock_rdlock suggest that any OS guarantee about
   // writer starvation may be influenced by the scheduling policy, so let's try
   // all 3 policies to see if any of them work.
-  PosixThreadFactory factory(policy);
-  factory.setDetached(false);
+  PosixThreadFactory factory(policy, PosixThreadFactory::Priority::NORMAL, 1, false);
 
   boost::shared_ptr<ReadWriteMutex> rwlock(new NoStarveReadWriteMutex());
 
@@ -145,15 +144,15 @@ void test_starve(PosixThreadFactory::POLICY policy) {
 BOOST_AUTO_TEST_SUITE(RWMutexStarveTest)
 
 BOOST_AUTO_TEST_CASE(test_starve_other) {
-  test_starve(PosixThreadFactory::OTHER);
+  test_starve(PosixThreadFactory::Policy::OTHER);
 }
 
 BOOST_AUTO_TEST_CASE(test_starve_rr) {
-  test_starve(PosixThreadFactory::ROUND_ROBIN);
+  test_starve(PosixThreadFactory::Policy::ROUND_ROBIN);
 }
 
 BOOST_AUTO_TEST_CASE(test_starve_fifo) {
-  test_starve(PosixThreadFactory::FIFO);
+  test_starve(PosixThreadFactory::Policy::FIFO);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

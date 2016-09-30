@@ -41,13 +41,20 @@ using apache::thrift::transport::TTransportException;
 using apache::thrift::transport::TTransportFactory;
 using boost::shared_ptr;
 
+static const shared_ptr<ThreadFactory>& validateThreadFactory(const shared_ptr<ThreadFactory>& threadFactory) {
+  if (threadFactory->isDetached()) {
+    throw std::invalid_argument("cannot use a detached thread factory on a TThreadedServer");
+  }
+  return threadFactory;
+}
+
 TThreadedServer::TThreadedServer(const shared_ptr<TProcessorFactory>& processorFactory,
                                  const shared_ptr<TServerTransport>& serverTransport,
                                  const shared_ptr<TTransportFactory>& transportFactory,
                                  const shared_ptr<TProtocolFactory>& protocolFactory,
                                  const shared_ptr<ThreadFactory>& threadFactory)
   : TServerFramework(processorFactory, serverTransport, transportFactory, protocolFactory),
-    threadFactory_(threadFactory) {
+    threadFactory_(validateThreadFactory(threadFactory)) {
 }
 
 TThreadedServer::TThreadedServer(const shared_ptr<TProcessor>& processor,
@@ -56,7 +63,7 @@ TThreadedServer::TThreadedServer(const shared_ptr<TProcessor>& processor,
                                  const shared_ptr<TProtocolFactory>& protocolFactory,
                                  const shared_ptr<ThreadFactory>& threadFactory)
   : TServerFramework(processor, serverTransport, transportFactory, protocolFactory),
-    threadFactory_(threadFactory) {
+    threadFactory_(validateThreadFactory(threadFactory)) {
 }
 
 TThreadedServer::TThreadedServer(const shared_ptr<TProcessorFactory>& processorFactory,
@@ -72,7 +79,7 @@ TThreadedServer::TThreadedServer(const shared_ptr<TProcessorFactory>& processorF
                      outputTransportFactory,
                      inputProtocolFactory,
                      outputProtocolFactory),
-    threadFactory_(threadFactory) {
+    threadFactory_(validateThreadFactory(threadFactory)) {
 }
 
 TThreadedServer::TThreadedServer(const shared_ptr<TProcessor>& processor,
@@ -88,14 +95,13 @@ TThreadedServer::TThreadedServer(const shared_ptr<TProcessor>& processor,
                      outputTransportFactory,
                      inputProtocolFactory,
                      outputProtocolFactory),
-    threadFactory_(threadFactory) {
+    threadFactory_(validateThreadFactory(threadFactory)) {
 }
 
 TThreadedServer::~TThreadedServer() {
 }
 
 void TThreadedServer::serve() {
-  threadFactory_->setDetached(false);
   TServerFramework::serve();
 
   // Ensure post-condition of no active clients
@@ -126,7 +132,7 @@ void TThreadedServer::onClientConnected(const shared_ptr<TConnectedClient>& pCli
 
 void TThreadedServer::onClientDisconnected(TConnectedClient* pClient) {
   Synchronized sync(clientMonitor_);
-  drainDeadClients();	// use the outgoing thread to do some maintenance on our dead client backlog
+  drainDeadClients(); // use the outgoing thread to do some maintenance on our dead client backlog
   ClientMap::iterator it = activeClientMap_.find(pClient);
   ClientMap::iterator end = it;
   deadClientMap_.insert(it, ++end);
@@ -153,7 +159,7 @@ void TThreadedServer::TConnectedClientRunner::run() /* override */ {
 }
 
 void TThreadedServer::TConnectedClientRunner::setThread(
-		const boost::shared_ptr<apache::thrift::concurrency::Thread>& pThread) {
+    const boost::shared_ptr<apache::thrift::concurrency::Thread>& pThread) {
   pThread_ = pThread;
 }
 

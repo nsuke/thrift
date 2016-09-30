@@ -246,7 +246,7 @@ public:
 
   /** See how accurate monitor timeout is. */
 
-  bool monitorTimeoutTest(size_t count = 1000, int64_t timeout = 10) {
+  bool monitorTimeoutTest(size_t count = 1000, int64_t timeout = 2) {
 
     Monitor monitor;
 
@@ -285,13 +285,13 @@ public:
   public:
     FloodTask(const size_t id) : _id(id) {}
     ~FloodTask() {
-      if (_id % 1000 == 0) {
+      if (_id % 10000 == 0) {
         std::cout << "\t\tthread " << _id << " done" << std::endl;
       }
     }
 
     void run() {
-      if (_id % 1000 == 0) {
+      if (_id % 10000 == 0) {
         std::cout << "\t\tthread " << _id << " started" << std::endl;
       }
 
@@ -308,8 +308,7 @@ public:
 
     for (size_t lix = 0; lix < loop; lix++) {
 
-      PlatformThreadFactory threadFactory = PlatformThreadFactory();
-      threadFactory.setDetached(true);
+      PlatformThreadFactory threadFactory = PlatformThreadFactory(true);
 
       for (size_t tix = 0; tix < count; tix++) {
 

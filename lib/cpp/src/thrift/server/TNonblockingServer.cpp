@@ -1260,8 +1260,8 @@ void TNonblockingServer::registerEvents(event_base* user_event_base) {
   if (ioThreads_.size() > 1) {
     ioThreadFactory_.reset(new PlatformThreadFactory(
 #if !USE_BOOST_THREAD && !USE_STD_THREAD
-        PlatformThreadFactory::OTHER,  // scheduler
-        PlatformThreadFactory::NORMAL, // priority
+        PlatformThreadFactory::Policy::OTHER,
+        PlatformThreadFactory::Priority::NORMAL,
         1,                             // stack size (MB)
 #endif
         false // detached

@@ -106,7 +106,7 @@ protected:
     boost::scoped_ptr<apache::thrift::concurrency::ThreadFactory> threadFactory(
         new apache::thrift::concurrency::PlatformThreadFactory(
 #if !USE_BOOST_THREAD && !USE_STD_THREAD
-            concurrency::PlatformThreadFactory::OTHER, concurrency::PlatformThreadFactory::NORMAL,
+            concurrency::PlatformThreadFactory::Policy::OTHER, concurrency::PlatformThreadFactory::Priority::NORMAL,
             1,
 #endif
             false));
