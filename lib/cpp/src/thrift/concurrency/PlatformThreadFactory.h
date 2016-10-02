@@ -22,7 +22,7 @@
 
 // clang-format off
 #include <thrift/thrift-config.h>
-#if USE_BOOST_THREAD or USE_STD_THREAD
+#if USE_BOOST_THREAD || USE_STD_THREAD
 #  include <thrift/concurrency/StdThreadFactory.h>
 #else
 #  include <thrift/concurrency/PosixThreadFactory.h>
