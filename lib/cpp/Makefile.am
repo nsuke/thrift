@@ -104,7 +104,7 @@ libthrift_la_SOURCES = src/thrift/TApplicationException.cpp \
                        src/thrift/server/TThreadedServer.cpp
 
 if WITH_BOOSTTHREADS
-libthrift_la_SOURCES += src/thrift/concurrency/BoostThreadFactory.cpp \
+libthrift_la_SOURCES += src/thrift/concurrency/StdThreadFactory.cpp \
                         src/thrift/concurrency/BoostMonitor.cpp \
                         src/thrift/concurrency/BoostMutex.cpp
 else
@@ -120,7 +120,7 @@ libthriftnb_la_SOURCES = src/thrift/server/TNonblockingServer.cpp \
 
 libthriftz_la_SOURCES = src/thrift/transport/TZlibTransport.cpp \
                         src/thrift/transport/THeaderTransport.cpp \
-                        src/thrift/protocol/THeaderProtocol.cpp 
+                        src/thrift/protocol/THeaderProtocol.cpp
 
 
 libthriftqt_la_MOC = src/thrift/qt/moc_TQTcpServer.cpp
@@ -168,7 +168,7 @@ include_thrift_HEADERS = \
 
 include_concurrencydir = $(include_thriftdir)/concurrency
 include_concurrency_HEADERS = \
-                         src/thrift/concurrency/BoostThreadFactory.h \
+                         src/thrift/concurrency/StdThreadFactory.h \
                          src/thrift/concurrency/Exception.h \
                          src/thrift/concurrency/Mutex.h \
                          src/thrift/concurrency/Monitor.h \
