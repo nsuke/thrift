@@ -104,9 +104,9 @@ endif()
 # WITH_*THREADS selects which threading library to use
 if(WITH_BOOSTTHREADS)
     set( thriftcpp_threads_SOURCES
-        src/thrift/concurrency/BoostThreadFactory.cpp
         src/thrift/concurrency/BoostMonitor.cpp
         src/thrift/concurrency/BoostMutex.cpp
+        src/thrift/concurrency/StdThreadFactory.cpp
     )
     list(APPEND SYSLIBS "${Boost_LIBRARIES}")
 elseif(UNIX AND NOT WITH_STDTHREADS)

@@ -294,8 +294,6 @@ public:
       if (_id % 10000 == 0) {
         std::cout << "\t\tthread " << _id << " started" << std::endl;
       }
-
-      THRIFT_SLEEP_USEC(1);
     }
     const size_t _id;
   };
@@ -319,8 +317,6 @@ public:
           shared_ptr<Thread> thread = threadFactory.newThread(task);
 
           thread->start();
-
-          THRIFT_SLEEP_USEC(1);
 
         } catch (TException& e) {
 

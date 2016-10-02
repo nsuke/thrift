@@ -30,8 +30,6 @@ namespace concurrency {
 
 /**
  * A thread factory to create std::threads.
- *
- * @version $Id:$
  */
 class StdThreadFactory : public ThreadFactory {
 
@@ -53,7 +51,6 @@ public:
   // From ThreadFactory;
   Thread::id_t getCurrentThreadId() const;
 };
-
 }
 }
 } // apache::thrift::concurrency
